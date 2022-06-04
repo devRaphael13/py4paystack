@@ -1,7 +1,7 @@
 import json
 import datetime
 from .request import Request
-from . import utilities
+from . import util
 
 
 class Transaction(Request):
@@ -25,9 +25,9 @@ class Transaction(Request):
 
         payload = {
             'amount': amount,
-            'email': utilities.check_email(email),
-            'currency': utilities.check_currency(currency),
-            'reference': reference if reference else utilities.create_ref(),
+            'email': util.check_email(email),
+            'currency': util.check_currency(currency),
+            'reference': reference if reference else util.create_ref(),
             'callback_url': redirect_url
         }
 
@@ -38,18 +38,18 @@ class Transaction(Request):
             payload['plan'] = plan
 
         if channels:
-            payload['channels'] = utilities.check_channels(channels)
+            payload['channels'] = util.check_channels(channels)
 
         if split_code:
-            payload['split_code'] = utilities.check_split_code(split_code)
+            payload['split_code'] = util.check_split_code(split_code)
 
         if transaction_charge:
             payload['transaction_charge'] = transaction_charge
 
         if subaccount:
-            payload['subaccount'] = utilities.check_subaccount(subaccount)
+            payload['subaccount'] = util.check_subaccount(subaccount)
             if bearer:
-                payload['bearer'] = utilities.check_bearer(bearer)
+                payload['bearer'] = util.check_bearer(bearer)
         if metadata:
             payload['metadata'] = json.dumps(metadata)
 
@@ -66,14 +66,14 @@ class Transaction(Request):
         if any(args.values()):
             path += '?'
             if from_date:
-                args['from'] = utilities.handle_date(from_date)
+                args['from'] = util.handle_date(from_date)
             
             if to_date:
-                args['to'] = utilities.handle_date(to_date)
+                args['to'] = util.handle_date(to_date)
             
             for key, value in args.items():
                 if value:
-                    path += f"{utilities.camel_case(key)}={value}&"
+                    path += f"{util.camel_case(key)}={value}&"
         return self.get(path.rstrip('&'), self.secret_key)
 
     def fetch(self, transaction_id: int):
@@ -84,10 +84,10 @@ class Transaction(Request):
         path = f'{self.path}/check_authorization'
 
         payload = {
-            'email': utilities.check_email(email),
+            'email': util.check_email(email),
             'amount': amount,
-            'authorization_code': utilities.check_auth_code(authorization_code),
-            'currency': utilities.check_currency(currency)
+            'authorization_code': util.check_auth_code(authorization_code),
+            'currency': util.check_currency(currency)
         }
         return self.post(path, self.secret_key, payload)
 
@@ -95,26 +95,26 @@ class Transaction(Request):
         path = f'{self.path}/charge_authorization'
 
         payload = {
-            'email': utilities.check_email(email),
+            'email': util.check_email(email),
             'amount': amount,
-            'authorization_code': utilities.check_auth_code(authorization_code),
-            'reference': reference if reference else utilities.create_ref(),
-            'currency': utilities.check_currency(currency)
+            'authorization_code': util.check_auth_code(authorization_code),
+            'reference': reference if reference else util.create_ref(),
+            'currency': util.check_currency(currency)
         }
 
         if channels:
-            payload.update(utilities.check_channels(channels))
+            payload.update(util.check_channels(channels))
 
         if queue:
             payload['queue'] = True
 
         if split_code:
-            payload['split_code'] = utilities.check_split_code(split_code)
+            payload['split_code'] = util.check_split_code(split_code)
 
         if subaccount:
-            payload['subaccount'] = utilities.check_subaccount(subaccount)
+            payload['subaccount'] = util.check_subaccount(subaccount)
             if bearer:
-                payload['bearer'] = utilities.check_bearer(bearer)
+                payload['bearer'] = util.check_bearer(bearer)
 
         if transaction_charge:
             payload['transaction_charge'] = transaction_charge
@@ -124,11 +124,11 @@ class Transaction(Request):
     def part_payment(self, email: str, amount: int, currency: str, authorization_code: str, reference: str = None, at_least: str = None):
         path = f'{self.path}/part_debit'
         payload = {
-            'email': utilities.check_email(email),
+            'email': util.check_email(email),
             'amount': amount,
             'currency': currency,
-            'authorization_code': utilities.check_auth_code(authorization_code),
-            'reference': reference if reference else utilities.create_ref()
+            'authorization_code': util.check_auth_code(authorization_code),
+            'reference': reference if reference else util.create_ref()
         }
 
         if at_least:
@@ -158,19 +158,19 @@ class Transaction(Request):
         if any(args.values()):
             path += '?'
             if from_date:
-                args['from'] = utilities.handle_date(from_date)
+                args['from'] = util.handle_date(from_date)
             
             if to_date:
-                args['to'] = utilities.handle_date(to_date)
+                args['to'] = util.handle_date(to_date)
             
             if currency:
-                args['currency'] = utilities.check_currency(currency)
+                args['currency'] = util.check_currency(currency)
             
             if status:
-                args['status'] = utilities.check_transaction_status(status)
+                args['status'] = util.check_transaction_status(status)
             
             for key, value in args.items():
                 if value:
-                    path += f"{utilities.camel_case(key)}={value}&"
+                    path += f"{util.camel_case(key)}={value}&"
             return self.get(path.rstrip('&'), self.secret_key)
         return self.get(path, self.secret_key)

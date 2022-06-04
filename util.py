@@ -27,11 +27,13 @@ def check_currency(currency) -> str:
             f"Invalid currency: choices are {', '.join(currencies)}")
     return currency
 
+
 def _check_one_split_code(split_code: str) -> str:
     if not split_code.startswith('SPL_'):
         raise ValueError(
-                "Invalid split code: split code must start with 'SPL_'")
+            "Invalid split code: split code must start with 'SPL_'")
     return split_code
+
 
 def check_split_code(split_code: str | list) -> str | list:
     if isinstance(split_code, (list, tuple)):
@@ -47,12 +49,14 @@ def check_bvn(bvn: str) -> str:
         raise ValueError("bvn must contain only digits and be 11 digits long")
     return bvn
 
+
 def _check_one_subaccount(subaccount: str) -> str:
     if not subaccount.startswith('ACCT_'):
-                raise ValueError(
-                    "Invalid subaccount code: sub account must startwith 'ACCT_'")
+        raise ValueError(
+            "Invalid subaccount code: sub account must startwith 'ACCT_'")
     return subaccount
-            
+
+
 def check_subaccount(subaccount: str | list) -> str | list:
     if isinstance(subaccount, (list, tuple)):
         subaccount = map(_check_one_subaccount, subaccount)
@@ -177,3 +181,16 @@ def check_transaction_status(status: str) -> str:
     if not status in statuses:
         raise ValueError(f"Your choices are: {', '.join(statuses)}")
     return status
+
+
+def check_domain(domain: str) -> str:
+    pattern = re.compile(
+        r'^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|'
+        r'([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|'
+        r'([a-zA-Z0-9][-_.a-zA-Z0-9]{0,61}[a-zA-Z0-9]))\.'
+        r'([a-zA-Z]{2,13}|[a-zA-Z0-9-]{2,30}.[a-zA-Z]{2,3})$'
+    )
+    if not re.match(pattern, domain):
+        raise ValueError('Invalid domain')
+    return domain
+    

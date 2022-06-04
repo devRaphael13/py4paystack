@@ -1,5 +1,5 @@
 import datetime
-from . import utilities
+from . import util
 from .request import Request
 
 
@@ -17,7 +17,7 @@ class Customer(Request):
     def create(self, email: str, first_name: str, last_name: str, phone: int = None, metadata: dict = None):
         path = self.path
         payload = locals()
-        payload['email'] = utilities.check_email(email)
+        payload['email'] = util.check_email(email)
         if phone:
 
             payload['phone'] = f'+{phone}'
@@ -29,35 +29,35 @@ class Customer(Request):
         if any(args):
             path += '?'
             if from_date:
-                args['from'] = utilities.handle_date(from_date)
+                args['from'] = util.handle_date(from_date)
             
             if to_date:
-                args['to'] = utilities.handle_date(to_date)
+                args['to'] = util.handle_date(to_date)
 
             for key, value in args.items():
                 if value:
-                    path += f"{utilities.camel_case(key)}={value}&"
+                    path += f"{util.camel_case(key)}={value}&"
         return self.get(path.rstrip('&'), self.secret_key)
 
     def fetch(self, email_or_customer_code: str):
-        path = f'{self.path}/{utilities.check_email_or_customer(email_or_customer_code)}'
+        path = f'{self.path}/{util.check_email_or_customer(email_or_customer_code)}'
         return self.get(path, self.secret_key)
 
     def update(self, customer_code: str, first_name: str = None, last_name: str = None, phone: int = None, metadata: dict = None):
-        path = f'{self.path}/{utilities.check_customer(customer_code)}'
+        path = f'{self.path}/{util.check_customer(customer_code)}'
         payload = locals()
         payload.pop(customer_code)
         payload['phone'] = f'+{phone}'
         return self.put(path, self.secret_key, payload)
 
     def validate(self, customer_code: str, first_name: str, last_name: str, identification_type: str, country: str, bvn: str, bank_code: str = None, account_number: str = None, middle_name: str = None):
-        path = f'{self.path}/{utilities.check_customer(customer_code)}/identification'
+        path = f'{self.path}/{util.check_customer(customer_code)}/identification'
         payload = {
             'first_name': first_name,
             'last_name': last_name,
-            'type': utilities.check_identification_type(identification_type),
-            'country': utilities.check_country(country),
-            'bvn': utilities.check_bvn(bvn)
+            'type': util.check_identification_type(identification_type),
+            'country': util.check_country(country),
+            'bvn': util.check_bvn(bvn)
         }
 
         if payload['type'] == 'bank_account':
@@ -75,8 +75,8 @@ class Customer(Request):
         path = f'{self.path}/set_risk_action'
 
         payload = {
-            'risk_action': utilities.check_risk_action(risk_action),
-            'customer': utilities.check_email_or_customer(email_or_customer_code)
+            'risk_action': util.check_risk_action(risk_action),
+            'customer': util.check_email_or_customer(email_or_customer_code)
         }
 
         return self.post(path, self.secret_key, payload)
@@ -84,7 +84,7 @@ class Customer(Request):
     def deactivate_authorization(self, authorization_code: str):
         path = f'{self.path}/deactivate_authorization'
 
-        payload = {'authorization_code': utilities.check_auth_code(
+        payload = {'authorization_code': util.check_auth_code(
             authorization_code)}
 
         return self.post(path, self.secret_key, payload)

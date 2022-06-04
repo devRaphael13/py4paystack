@@ -1,5 +1,5 @@
 from .request import Request
-from . import utilities
+from . import util
 
 
 class DedicatedVirtualAccounts(Request):
@@ -17,15 +17,15 @@ class DedicatedVirtualAccounts(Request):
         path = self.path
 
         payload = {
-            'customer': utilities.check_customer(customer_code),
-            'preferred_bank': utilities.check_preferred_bank(preferred_bank)
+            'customer': util.check_customer(customer_code),
+            'preferred_bank': util.check_preferred_bank(preferred_bank)
         }
 
         if subaccount:
-            payload['subaccount'] = utilities.check_subaccount(subaccount)
+            payload['subaccount'] = util.check_subaccount(subaccount)
 
         if split_code:
-            payload['split_code'] = utilities.check_split_code(split_code)
+            payload['split_code'] = util.check_split_code(split_code)
 
         if first_name:
             payload['first_name'] = first_name
@@ -44,10 +44,10 @@ class DedicatedVirtualAccounts(Request):
         if any(locals().values()):
             path += '?'
             if currency:
-                args['currency'] = utilities.check_currency(currency)
+                args['currency'] = util.check_currency(currency)
 
             if provider_slug:
-                args['provider_slug'] = utilities.check_preferred_bank(
+                args['provider_slug'] = util.check_preferred_bank(
                     provider_slug)
 
             for key, value in args.items():
@@ -60,9 +60,9 @@ class DedicatedVirtualAccounts(Request):
         return self.get(path, self.secret_key)
 
     def requery(self, account_number: str, provider_slug: str, date: str = None):
-        path = f'{self.path}/requery?account_number={utilities.check_acct_no(account_number)}&provider_slug={utilities.check_preferred_bank(provider_slug)}'
+        path = f'{self.path}/requery?account_number={util.check_acct_no(account_number)}&provider_slug={util.check_preferred_bank(provider_slug)}'
         if date:
-            path += f'&date={utilities.handle_date(date)}'
+            path += f'&date={util.handle_date(date)}'
         return self.get(path, self.secret_key)
 
     def deactivate(self, dedicated_account_id: int):
@@ -73,7 +73,7 @@ class DedicatedVirtualAccounts(Request):
         path = f'{self.path}/split'
 
         payload = {
-            'preferred_bank': utilities.check_preferred_bank(preferred_bank)
+            'preferred_bank': util.check_preferred_bank(preferred_bank)
         }
         if not ( customer_code or customer_id ):
             raise ValueError('Provide the customer_code or the customer_id')
@@ -82,23 +82,23 @@ class DedicatedVirtualAccounts(Request):
             payload['customer'] = customer_id
 
         if customer_code and not customer_id:
-            payload['customer'] = utilities.check_customer(customer_code)
+            payload['customer'] = util.check_customer(customer_code)
         
         if not ( subaccount or split_code ):
             raise ValueError('Provide subaccount or split_code or a list of subaccounts or split_codes')
         
         if subaccount:
-            payload['subaccount'] = utilities.check_subaccount(subaccount)
+            payload['subaccount'] = util.check_subaccount(subaccount)
         
         if split_code:
-            payload['split_code'] = utilities.check_split_code(split_code)
+            payload['split_code'] = util.check_split_code(split_code)
         
         return self.post(path, self.secret_key, payload)
 
     def remove_split(self, account_number: str):
         path = f'{self.path}/split'
         payload = {
-            'account_number': utilities.check_acct_no(account_number)
+            'account_number': util.check_acct_no(account_number)
         }
         return self.delete(path, self.secret_key, payload=payload)
 

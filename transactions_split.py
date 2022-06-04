@@ -1,7 +1,7 @@
 import datetime
 from typing import Iterable
 from .request import Request
-from . import utilities
+from . import util
 from . import settings
 
 class TransactionSplit(Request):
@@ -23,18 +23,18 @@ class TransactionSplit(Request):
         payload = {
             'name': name,
             'type': split_type,
-            'currency': utilities.check_currency(currency),
+            'currency': util.check_currency(currency),
             'bearer_type': bearer_type,
             'subaccounts': [],
         }
 
         if bearer_type == 'subaccount':
-            payload['bearer_subaccount'] = utilities.check_subaccount(
+            payload['bearer_subaccount'] = util.check_subaccount(
                 bearer_subaccount)
 
         for acct in subaccounts:
             payload['subaccounts'].append(
-                {'subaccount': utilities.check_subaccount(acct[0]), 'share': acct[1]})
+                {'subaccount': util.check_subaccount(acct[0]), 'share': acct[1]})
 
         return self.post(path, self.secret_key, payload)
 
@@ -43,11 +43,11 @@ class TransactionSplit(Request):
         args = locals()
         if any(args):
             path += '?'
-            args['from'] = utilities.handle_date(args.pop('from_date'))
-            args['to'] = utilities.handle_date(args.pop('to_date'))
+            args['from'] = util.handle_date(args.pop('from_date'))
+            args['to'] = util.handle_date(args.pop('to_date'))
             for key, value in args.items():
                 if value:
-                    path += f"{utilities.camel_case(key)}={value}&"
+                    path += f"{util.camel_case(key)}={value}&"
         return self.get(path.rstrip('&'), self.secret_key)
 
     def fetch(self, split_id: int):
@@ -69,7 +69,7 @@ class TransactionSplit(Request):
     def add_update_subaccount(self, split_id: int, subaccount: str, share: int):
         path = f'{self.path}/{split_id}/subaccount/add'
         payload = {
-            'subaccount': utilities.check_subaccount(subaccount),
+            'subaccount': util.check_subaccount(subaccount),
             'share': share
         }
         return self.post(path, self.secret_key, payload)
@@ -77,6 +77,6 @@ class TransactionSplit(Request):
     def remove_subaccount(self, split_id: int, subaccount: str):
         path = f'{self.path}/{split_id}/subaccount/remove'
         payload = {
-            'subaccount': utilities.check_subaccount(subaccount)
+            'subaccount': util.check_subaccount(subaccount)
         }
         return self.post(path, self.secret_key, payload)
