@@ -10,16 +10,6 @@ def check_auth_code(auth_code: str) -> str:
             "Invalid auth_code: auth_code must start with 'AUTH_'")
     return auth_code
 
-
-def camel_case(string: str) -> str:
-    string = string.split('_')
-    result = string[0]
-    if len(string) > 1:
-        _, *rest = string
-        result += f"{''.join(( x.title() for x in rest ))}"
-    return result
-
-
 def check_currency(currency) -> str:
     currencies = settings.CURRENCIES
     if not currency in currencies:
@@ -120,11 +110,11 @@ def check_country(country_code: str) -> str:
     return country_code
 
 
-def check_acct_no(acct_no: str) -> str:
-    if len(acct_no) != 10:
+def check_account_number(account_number: str) -> str:
+    if len(account_number) != 10:
         raise ValueError(
             "Invalid account number, value must be a 10 character string")
-    return acct_no
+    return account_number
 
 
 def check_risk_action(risk_action: str) -> str:
@@ -193,4 +183,25 @@ def check_domain(domain: str) -> str:
     if not re.match(pattern, domain):
         raise ValueError('Invalid domain')
     return domain
+
+def handle_query_params(per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None) -> dict | None:
+    params = {}
+    if per_page:
+        params['perPage'] = per_page
     
+    if page:
+        params['page'] = page
+
+    if from_date:
+        params['from'] = handle_date(from_date)
+
+    if to_date:
+        params['to'] = handle_date(to_date)
+    
+    return params
+
+def check_settlement_schedule(settlement_schedule: str) -> str:
+    schedules = settings.SETTLEMENT_SCHEDULES
+    if not settlement_schedule in schedules:
+        raise ValueError(f"Your choices are: {', '.join(schedules)}")
+    return settlement_schedule

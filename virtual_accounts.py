@@ -51,7 +51,7 @@ class DedicatedVirtualAccounts(Request):
                     provider_slug)
 
             for key, value in args.items():
-                if value:
+                if value is not None:
                     path += f'{key}={value}&'
         return self.get(path.rstrip('&'), self.secret_key)
 
@@ -60,7 +60,7 @@ class DedicatedVirtualAccounts(Request):
         return self.get(path, self.secret_key)
 
     def requery(self, account_number: str, provider_slug: str, date: str = None):
-        path = f'{self.path}/requery?account_number={util.check_acct_no(account_number)}&provider_slug={util.check_preferred_bank(provider_slug)}'
+        path = f'{self.path}/requery?account_number={util.check_account_number(account_number)}&provider_slug={util.check_preferred_bank(provider_slug)}'
         if date:
             path += f'&date={util.handle_date(date)}'
         return self.get(path, self.secret_key)
@@ -98,7 +98,7 @@ class DedicatedVirtualAccounts(Request):
     def remove_split(self, account_number: str):
         path = f'{self.path}/split'
         payload = {
-            'account_number': util.check_acct_no(account_number)
+            'account_number': util.check_account_number(account_number)
         }
         return self.delete(path, self.secret_key, payload=payload)
 

@@ -4,6 +4,10 @@ from . import util
 
 class ApplePay(Request):
 
+    """
+    The Apple Pay API allows you register your application's top-level domain or subdomain
+    """
+
     path = '/apple-pay/domain'
 
     def __init__(self, secret_key):

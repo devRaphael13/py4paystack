@@ -62,18 +62,16 @@ class Transaction(Request):
 
     def list_transactions(self, per_page: int = None, page: int = None, customer: int = None, status: str = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None, amount: int = None):
         path = self.path
-        args = locals()
-        if any(args.values()):
+        params = util.handle_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date)
+        params.update({ key: value for key, value in locals().items() if value and key not in params })
+
+        if status:
+            params['status'] = util.check_transaction_status(status)
+            
+        if any(params.values()):
             path += '?'
-            if from_date:
-                args['from'] = util.handle_date(from_date)
-            
-            if to_date:
-                args['to'] = util.handle_date(to_date)
-            
-            for key, value in args.items():
-                if value:
-                    path += f"{util.camel_case(key)}={value}&"
+            for key, value in params.items():
+                path += f"{key}={value}&"
         return self.get(path.rstrip('&'), self.secret_key)
 
     def fetch(self, transaction_id: int):
@@ -140,37 +138,29 @@ class Transaction(Request):
 
     def totals(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
         path = f'{self.path}/totals'
-        args = locals().values()
-        if any(args):
-            for x in args:
-                if x:
-                    path += f'/{x}'
+        params = util.handle_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date).values()
+        if any(params):
+            for value in params:
+                path += f'/{value}'
         return self.get(path, self.secret_key)
 
-    def timeline(self, id_or_reference: int | str = None,  per_page: int = None, page: int = None):
+    def timeline(self, id_or_reference: int | str = None):
         path = f"{self.path}/timeline/{id_or_reference}" if id_or_reference else '/timeline'
         return self.get(path, self.secret_key)
 
     def export(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None, status: str = None, currency: str = None, amount: int = None, settled: bool = None, settlement: int = None, payment_page: int = None):
         path = f'{self.path}/export'
-        args = locals()
+        params = util.handle_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date)
+        params.update({ key: value for key, value in locals().items() if value and key not in params })
+        
+        if currency:
+            params['currency'] = util.check_currency(currency)
+        
+        if status:
+            params['status'] = util.check_transaction_status(status)
 
-        if any(args.values()):
+        if any(params.values()):
             path += '?'
-            if from_date:
-                args['from'] = util.handle_date(from_date)
-            
-            if to_date:
-                args['to'] = util.handle_date(to_date)
-            
-            if currency:
-                args['currency'] = util.check_currency(currency)
-            
-            if status:
-                args['status'] = util.check_transaction_status(status)
-            
-            for key, value in args.items():
-                if value:
-                    path += f"{util.camel_case(key)}={value}&"
-            return self.get(path.rstrip('&'), self.secret_key)
-        return self.get(path, self.secret_key)
+            for key, value in params.items():
+                path += f"{key}={value}&"
+        return self.get(path.rstrip('&'), self.secret_key)

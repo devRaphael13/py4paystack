@@ -20,3 +20,5 @@ RISK_ACTIONS = ('default', 'allow', 'deny')
 
 VIRTUAL_ACCOUNT_PROVIDERS = ( 'access-bank', 'wema-bank' )
 
+SETTLEMENT_SCHEDULES = ( 'auto', 'weekly', 'monthly' )
+

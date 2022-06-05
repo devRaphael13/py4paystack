@@ -25,18 +25,11 @@ class Customer(Request):
 
     def list_customers(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
         path = self.path
-        args = locals()
-        if any(args):
+        params = util.handle_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date)
+        if any(params.values()):
             path += '?'
-            if from_date:
-                args['from'] = util.handle_date(from_date)
-            
-            if to_date:
-                args['to'] = util.handle_date(to_date)
-
-            for key, value in args.items():
-                if value:
-                    path += f"{util.camel_case(key)}={value}&"
+            for key, value in params.items():
+                path += f"{key}={value}&"
         return self.get(path.rstrip('&'), self.secret_key)
 
     def fetch(self, email_or_customer_code: str):

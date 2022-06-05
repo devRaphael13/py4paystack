@@ -11,14 +11,14 @@ class Verification(Request):
         self.secret_key = secret_key
 
     def resolve_acct_number(self, account_number: str, bank_code: str):
-        path = f'/bank/resolve?account_number={util.check_acct_no(account_number)}&bank_code={util.check_bank_code(bank_code)}'
+        path = f'/bank/resolve?account_number={util.check_account_number(account_number)}&bank_code={util.check_bank_code(bank_code)}'
         return self.get(path, self.secret_key)
 
     def validate_account(self, account_name: str, account_number: str, account_type: str, bank_code: str, country_code: str, document_type: str, document_number: str):
         path = '/bank/validate'
         payload = {
             'account_name': account_name,
-            'account_number': util.check_acct_no(account_number),
+            'account_number': util.check_account_number(account_number),
             'account_type': util.check_account_types(account_type),
             'bank_code': util.check_bank_code(bank_code),
             'country_code': util.check_country(country_code),
