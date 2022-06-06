@@ -2,13 +2,7 @@ import uuid
 import re
 import datetime
 from . import settings
-
-
-def check_auth_code(auth_code: str) -> str:
-    if not auth_code.startswith('AUTH_'):
-        raise ValueError(
-            "Invalid auth_code: auth_code must start with 'AUTH_'")
-    return auth_code
+from typing import Iterable
 
 def check_currency(currency) -> str:
     currencies = settings.CURRENCIES
@@ -23,54 +17,16 @@ def check_split_type(split_type: str) -> str:
         raise ValueError(f"Your choices are: {', '.join(split_types)}")
     return split_type
 
-def _check_one_split_code(split_code: str) -> str:
-    if not split_code.startswith('SPL_'):
-        raise ValueError(
-            "Invalid split code: split code must start with 'SPL_'")
-    return split_code
-
-
-def check_split_code(split_code: str | list) -> str | list:
-    if isinstance(split_code, (list, tuple)):
-        split_code = list(map(_check_one_split_code, split_code))
-    else:
-        split_code = _check_one_split_code(split_code)
-
-    return split_code
-
-
 def check_bvn(bvn: str) -> str:
     if not bvn.isdigit() or len(bvn) != 11:
         raise ValueError("bvn must contain only digits and be 11 digits long")
     return bvn
-
-
-def _check_one_subaccount(subaccount: str) -> str:
-    if not subaccount.startswith('ACCT_'):
-        raise ValueError(
-            "Invalid subaccount code: sub account must startwith 'ACCT_'")
-    return subaccount
-
-
-def check_subaccount(subaccount: str | list) -> str | list:
-    if isinstance(subaccount, (list, tuple)):
-        return list(map(_check_one_subaccount, subaccount))
-    return _check_one_subaccount(subaccount)
-
 
 def check_bearer(bearer) -> str:
     if not bearer in settings.BEARER_TYPES:
         raise ValueError(
             f"Invalid bearer: choices are {', '.join(settings.BEARER_TYPES)}")
     return bearer
-
-
-def check_customer(customer) -> str:
-    if not customer.startswith('CUS_'):
-        raise ValueError(
-            "Invalid customer code: customer code must start with 'CUS_'")
-    return customer
-
 
 def create_ref() -> str:
     return str(uuid.uuid4()).replace('-', '')
@@ -133,7 +89,7 @@ def check_email_or_customer(email_or_customer_code: str) -> str:
         customer = check_email(email_or_customer_code)
     except ValueError:
         try:
-            customer = check_customer(email_or_customer_code)
+            customer = check_code(email_or_customer_code, 'CUS')
         except ValueError as error:
             raise ValueError(
                 'Invalid value for email_or_customer_code, provide an email or customer_code') from error
@@ -221,9 +177,16 @@ def check_plan_status(status: str) -> str:
         raise ValueError(f"Your choices are: {', '.join(statuses)}")
     return status
 
-def check_plan_code(plan_code: str) -> str:
-    if not plan_code.startswith('PLN_'):
-        raise ValueError("Invalid plan code: customer code must start with 'PLN_'")
-    return plan_code
+def check_code(prefix: str, code: Iterable | str) -> str | list:
+    prefixes = settings.CODE_PREFIXES
+    if isinstance(code, ( str )):
+        code = tuple(code)
 
-    
+    for x in code:
+        pre = x.split('_')[0]
+        if pre != prefix:
+            raise ValueError("Invalid {0}: {0} must start with {1} not {2}".format(prefixes[prefix], prefix, pre))
+    if len(code) == 1:
+        return code[0]
+    return code
+

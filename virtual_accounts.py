@@ -1,5 +1,6 @@
 from .request import Request
 from . import util
+from . import settings
 
 
 class DedicatedVirtualAccounts(Request):
@@ -15,15 +16,15 @@ class DedicatedVirtualAccounts(Request):
 
     def create(self, customer_code: str, preferred_bank: str, subaccount: str = None, split_code: str = None, first_name: str = None, last_name: str = None, phone: int = None):
         payload = {
-            'customer': util.check_customer(customer_code),
+            'customer': util.check_code(settings.CODE_NAMES['customer'], customer_code),
             'preferred_bank': util.check_preferred_bank(preferred_bank)
         }
 
         if subaccount:
-            payload['subaccount'] = util.check_subaccount(subaccount)
+            payload['subaccount'] = util.check_code(settings.CODE_NAMES['subaccount'], subaccount)
 
         if split_code:
-            payload['split_code'] = util.check_split_code(split_code)
+            payload['split_code'] = util.check_code(settings.CODE_NAMES['split'], split_code)
 
         if first_name:
             payload['first_name'] = first_name
@@ -34,7 +35,7 @@ class DedicatedVirtualAccounts(Request):
         if phone:
             payload['phone'] = f'+{phone}'
 
-        return self.post(self.path, self.secret_key, payload)
+        return self.post(self.path, self.secret_key, payload=payload)
 
     def list_accounts(self, active: bool = None, currency: str = None, provider_slug: str = None, bank_id: int = None, customer_id: str = None):
         path = self.path
@@ -80,18 +81,18 @@ class DedicatedVirtualAccounts(Request):
             payload['customer'] = customer_id
 
         if customer_code and not customer_id:
-            payload['customer'] = util.check_customer(customer_code)
+            payload['customer'] = util.check_code(settings.CODE_NAMES['customer'], customer_code)
         
         if not ( subaccount or split_code ):
             raise ValueError('Provide subaccount or split_code or a list of subaccounts or split_codes')
         
         if subaccount:
-            payload['subaccount'] = util.check_subaccount(subaccount)
+            payload['subaccount'] = util.check_code(settings.CODE_NAMES['subaccount'], subaccount)
         
         if split_code:
-            payload['split_code'] = util.check_split_code(split_code)
+            payload['split_code'] = util.check_code(settings.CODE_NAMES['split'] ,split_code)
         
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, self.secret_key, payload=payload)
 
     def remove_split(self, account_number: str):
         path = f'{self.path}/split'

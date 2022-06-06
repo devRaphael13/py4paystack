@@ -25,7 +25,7 @@ class Verification(Request):
             'document_type': util.check_document_type(document_type),
             'document_number': document_number
         }
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, self.secret_key, payload=payload)
 
     def resolve_card_bin(self, card_bin: int):
         path = '/decision/bin/{}'

@@ -1,5 +1,6 @@
 from . import util
 from .request import Request
+from . import settings
 
 
 class Plan(Request):
@@ -20,7 +21,7 @@ class Plan(Request):
         if currency:
             payload['currency'] = util.check_currency(currency)
 
-        return self.post(self.path, self.secret_key, payload)
+        return self.post(self.path, self.secret_key, payload=payload)
 
     def list_plans(self, per_page: int = None, page: int = None, status: str = None, interval: str = None, amount: int = None):
         path = self.path
@@ -47,7 +48,7 @@ class Plan(Request):
             path += str(plan_id)
 
         if plan_code and not plan_id:
-            path += util.check_plan_code(plan_code)
+            path += util.check_code(settings.CODE_NAMES['plan'], plan_code)
 
         return self.get(path, self.secret_key)
 
@@ -60,7 +61,7 @@ class Plan(Request):
             path += str(plan_id)
 
         if plan_code and not plan_id:
-            path += util.check_plan_code(plan_code)
+            path += util.check_code(settings.CODE_NAMES['plan'], plan_code)
 
         payload = {key: value for key, value in locals().items() if key not in (
             'plan_id', 'plan_code') and value is not None}
@@ -68,4 +69,4 @@ class Plan(Request):
         if interval:
             payload['interval'] = util.check_plan_interval(interval)
 
-        return self.put(path, self.secret_key, payload)
+        return self.put(path, self.secret_key, payload=payload)

@@ -17,7 +17,7 @@ class ApplePay(Request):
         payload = {
             'domainName': util.check_domain(domain)
         }
-        return self.post(self.path, self.secret_key, payload)
+        return self.post(self.path, self.secret_key, payload=payload)
 
     def list_domains(self):
         self.get(self.path, self.secret_key)

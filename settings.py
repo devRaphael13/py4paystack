@@ -1,6 +1,18 @@
 DOCUMENT_TYPES = ('identityNumber', 'passportNumber',
                   'businessRegistrationNumber')
 
+CODE_PREFIXES = {
+    'ACCT': 'subaccount',
+    'PLN': 'plan',
+    'SUB': 'subscription',
+    'CUS': 'customer',
+    'AUTH': 'authorization',
+    'SPL': 'split',
+    'PROD': 'product'
+}
+
+CODE_NAMES = { value: key for key, value in CODE_PREFIXES.items() }
+
 ACCOUNT_TYPES = ('personal', 'business')
 
 PAYMENT_CHANNELS = ('card', 'bank', 'ussd', 'qr',

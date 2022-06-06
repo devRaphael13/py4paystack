@@ -1,6 +1,7 @@
 import datetime
 from .request import Request
 from . import util
+from . import settings
 
 
 class SubAccounts(Request):
@@ -23,7 +24,7 @@ class SubAccounts(Request):
         if primary_contact_email:
             payload['primary_contact_email'] = util.check_email(
                 primary_contact_email)
-        return self.post(self.path, self.secret_key, payload)
+        return self.post(self.path, self.secret_key, payload=payload)
 
     def list_subaccounts(self, per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None):
         path = self.path
@@ -44,7 +45,7 @@ class SubAccounts(Request):
             path += str(subaccount_id)
 
         if subaccount_code and not subaccount_id:
-            path += util.check_subaccount(subaccount_code)
+            path += util.check_code(settings.CODE_NAMES['subaccount'], subaccount_code)
 
         return self.get(path, self.secret_key)
 
@@ -58,7 +59,7 @@ class SubAccounts(Request):
             path += str(subaccount_id)
 
         if subaccount_code and not subaccount_id:
-            path += util.check_subaccount(subaccount_code)
+            path += util.check_code(settings.CODE_NAMES['subaccount'], subaccount_code)
 
         payload = {key: value for key, value in locals().items() if key not in (
             'subaccount_id', 'subaccount_code') and value is not None}
@@ -78,7 +79,7 @@ class SubAccounts(Request):
             payload['primary_contact_email'] = util.check_email(
                 primary_contact_email)
             
-        return self.put(path, self.secret_key, payload)
+        return self.put(path, self.secret_key, payload=payload)
 
     
     

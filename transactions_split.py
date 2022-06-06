@@ -21,14 +21,13 @@ class TransactionSplit(Request):
             'type': util.check_split_type(split_type),
             'currency': util.check_currency(currency),
             'bearer_type': util.check_bearer(bearer_type),
-            'subaccounts': [{ 'subaccount': util.check_subaccount(subaccount), 'share': share } for subaccount, share in subaccounts],
+            'subaccounts': [{ 'subaccount': util.check_code(settings.CODE_NAMES['subaccount'], subaccount), 'share': share } for subaccount, share in subaccounts],
         }
 
         if bearer_type == 'subaccount':
-            payload['bearer_subaccount'] = util.check_subaccount(
-                bearer_subaccount)
+            payload['bearer_subaccount'] = util.check_code(settings.CODE_NAMES['subaccount'], bearer_subaccount)
 
-        return self.post(self.path, self.secret_key, payload)
+        return self.post(self.path, self.secret_key, payload=payload)
 
     def list_search(self, name: str = None, active: bool = None, sort_by: str = None, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
         path = self.path
@@ -57,19 +56,19 @@ class TransactionSplit(Request):
         if 'bearer_type' in payload and payload['bearer_type'] != 'subaccount':
             payload.pop('bearer_subaccount')
 
-        return self.put(path, self.secret_key, payload)
+        return self.put(path, self.secret_key, payload=payload)
 
     def add_update_subaccount(self, split_id: int, subaccount: str, share: int):
         path = f'{self.path}/{split_id}/subaccount/add'
         payload = {
-            'subaccount': util.check_subaccount(subaccount),
+            'subaccount': util.check_code(settings.CODE_NAMES['subaccount'], subaccount),
             'share': share
         }
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, self.secret_key, payload=payload)
 
     def remove_subaccount(self, split_id: int, subaccount: str):
         path = f'{self.path}/{split_id}/subaccount/remove'
         payload = {
-            'subaccount': util.check_subaccount(subaccount)
+            'subaccount': util.check_code(settings.CODE_NAMES['subaccount'], subaccount)
         }
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, self.secret_key, payload=payload)

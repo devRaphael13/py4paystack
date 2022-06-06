@@ -1,6 +1,7 @@
 import json
 import datetime
 from .request import Request
+from . import settings
 from . import util
 
 
@@ -27,29 +28,27 @@ class Transaction(Request):
         }
 
         if plan:
-            assert plan.startswith(
-                'PLN_'), "Invalid plan code: plan code must start with 'PLN_'"
             payload.pop('amount')
-            payload['plan'] = plan
+            payload['plan'] = util.check_code(settings.CODE_NAMES['plan'], plan)
 
         if channels:
             payload['channels'] = util.check_channels(channels)
 
         if split_code:
-            payload['split_code'] = util.check_split_code(split_code)
+            payload['split_code'] = util.check_code(settings.CODE_NAMES['split'], split_code)
 
         if transaction_charge:
             payload['transaction_charge'] = transaction_charge
 
         if subaccount:
-            payload['subaccount'] = util.check_subaccount(subaccount)
+            payload['subaccount'] = util.check_code(settings.CODE_NAMES['subaccount'], subaccount)
             if bearer:
                 payload['bearer'] = util.check_bearer(bearer)
 
         if metadata:
             payload['metadata'] = json.dumps(metadata)
 
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, self.secret_key, payload=payload)
 
     def verify(self, reference: str):
         path = f'{self.path}/verify/{reference}'
@@ -59,7 +58,7 @@ class Transaction(Request):
     def list_transactions(self, per_page: int = None, page: int = None, customer: int = None, status: str = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None, amount: int = None):
         path = self.path
         params = util.handle_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date)
-        params.update({ key: value for key, value in locals().items() if value and key not in params })
+        params.update({ key: value for key, value in locals().items() if value is not None and key not in params })
 
         if status:
             params['status'] = util.check_transaction_status(status)
@@ -80,10 +79,10 @@ class Transaction(Request):
         payload = {
             'email': util.check_email(email),
             'amount': amount,
-            'authorization_code': util.check_auth_code(authorization_code),
+            'authorization_code': util.check_code(settings.CODE_NAMES['authorization'], authorization_code),
             'currency': util.check_currency(currency)
         }
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, self.secret_key, payload=payload)
 
     def charge_authorization(self, email: str, amount: int, authorization_code: str, currency: str, reference: str = None, channels: list | str = None, queue: bool = False, split_code: str = None, subaccount: str = None, transaction_charge: int = None, bearer: str = 'account'):
         path = f'{self.path}/charge_authorization'
@@ -91,7 +90,7 @@ class Transaction(Request):
         payload = {
             'email': util.check_email(email),
             'amount': amount,
-            'authorization_code': util.check_auth_code(authorization_code),
+            'authorization_code': util.check_code(settings.CODE_NAMES['authorization'] , authorization_code),
             'reference': reference if reference else util.create_ref(),
             'currency': util.check_currency(currency)
         }
@@ -103,17 +102,17 @@ class Transaction(Request):
             payload['queue'] = True
 
         if split_code:
-            payload['split_code'] = util.check_split_code(split_code)
+            payload['split_code'] = util.check_code(settings.CODE_NAMES['split'], split_code)
 
         if subaccount:
-            payload['subaccount'] = util.check_subaccount(subaccount)
+            payload['subaccount'] = util.check_code(settings.CODE_NAMES['subaccount'], subaccount)
             if bearer:
                 payload['bearer'] = util.check_bearer(bearer)
 
         if transaction_charge:
             payload['transaction_charge'] = transaction_charge
 
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, self.secret_key, payload=payload)
 
     def part_payment(self, email: str, amount: int, currency: str, authorization_code: str, reference: str = None, at_least: str = None):
         path = f'{self.path}/part_debit'
@@ -121,7 +120,7 @@ class Transaction(Request):
             'email': util.check_email(email),
             'amount': amount,
             'currency': util.check_currency(currency),
-            'authorization_code': util.check_auth_code(authorization_code),
+            'authorization_code': util.check_code(settings.CODE_NAMES['authorization'], authorization_code),
             'reference': reference if reference else util.create_ref()
         }
 
@@ -129,7 +128,7 @@ class Transaction(Request):
             assert at_least.isdigit(), "Invalid at_least value eg. '12000'"
             payload['at_least'] = at_least
 
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, self.secret_key, payload=payload)
 
     def totals(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
         path = f'{self.path}/totals'
@@ -146,7 +145,7 @@ class Transaction(Request):
     def export(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None, status: str = None, currency: str = None, amount: int = None, settled: bool = None, settlement: int = None, payment_page: int = None):
         path = f'{self.path}/export'
         params = util.handle_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date)
-        params.update({ key: value for key, value in locals().items() if value and key not in params })
+        params.update({ key: value for key, value in locals().items() if value is not None and key not in params })
         
         if currency:
             params['currency'] = util.check_currency(currency)

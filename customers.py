@@ -1,7 +1,7 @@
 import datetime
 from . import util
 from .request import Request
-
+from . import settings
 
 class Customer(Request):
 
@@ -35,14 +35,14 @@ class Customer(Request):
         return self.get(path, self.secret_key)
 
     def update(self, customer_code: str, first_name: str = None, last_name: str = None, phone: int = None, metadata: dict = None):
-        path = f'{self.path}/{util.check_customer(customer_code)}'
+        path = f'{self.path}/{util.check_code(settings.CODE_NAMES["customer"], customer_code)}'
         payload = locals()
         payload.pop(customer_code)
         payload['phone'] = f'+{phone}'
-        return self.put(path, self.secret_key, payload)
+        return self.put(path, self.secret_key, payload=payload)
 
     def validate(self, customer_code: str, first_name: str, last_name: str, identification_type: str, country: str, bvn: str, bank_code: str = None, account_number: str = None, middle_name: str = None):
-        path = f'{self.path}/{util.check_customer(customer_code)}/identification'
+        path = f'{self.path}/{util.check_code(settings.CODE_NAMES["customer"], customer_code)}/identification'
         payload = {
             'first_name': first_name,
             'last_name': last_name,
@@ -60,7 +60,7 @@ class Customer(Request):
         if middle_name is not None:
             payload['middle_name'] = middle_name
 
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, self.secret_key, payload=payload)
 
     def whitelist_blacklist(self, email_or_customer_code, risk_action):
         path = f'{self.path}/set_risk_action'
@@ -70,12 +70,11 @@ class Customer(Request):
             'customer': util.check_email_or_customer(email_or_customer_code)
         }
 
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, self.secret_key, payload=payload)
 
     def deactivate_authorization(self, authorization_code: str):
         path = f'{self.path}/deactivate_authorization'
 
-        payload = {'authorization_code': util.check_auth_code(
-            authorization_code)}
+        payload = {'authorization_code': util.check_code(settings.CODE_NAMES['authorization'], authorization_code)}
 
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, self.secret_key, payload=payload)
