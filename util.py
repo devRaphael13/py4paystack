@@ -17,6 +17,11 @@ def check_currency(currency) -> str:
             f"Invalid currency: choices are {', '.join(currencies)}")
     return currency
 
+def check_split_type(split_type: str) -> str:
+    split_types = settings.SPLIT_TYPES
+    if not split_type in split_types:
+        raise ValueError(f"Your choices are: {', '.join(split_types)}")
+    return split_type
 
 def _check_one_split_code(split_code: str) -> str:
     if not split_code.startswith('SPL_'):
@@ -49,10 +54,8 @@ def _check_one_subaccount(subaccount: str) -> str:
 
 def check_subaccount(subaccount: str | list) -> str | list:
     if isinstance(subaccount, (list, tuple)):
-        subaccount = map(_check_one_subaccount, subaccount)
-    else:
-        subaccount = _check_one_subaccount(subaccount)
-    return subaccount
+        return list(map(_check_one_subaccount, subaccount))
+    return _check_one_subaccount(subaccount)
 
 
 def check_bearer(bearer) -> str:
@@ -205,3 +208,22 @@ def check_settlement_schedule(settlement_schedule: str) -> str:
     if not settlement_schedule in schedules:
         raise ValueError(f"Your choices are: {', '.join(schedules)}")
     return settlement_schedule
+
+def check_plan_interval(interval: str) -> str:
+    intervals = settings.PLAN_INTERVALS
+    if not interval in intervals:
+        raise ValueError(f"Your choices are: {', '.join(intervals)}")
+    return interval
+
+def check_plan_status(status: str) -> str:
+    statuses = settings.PLAN_STATUSES
+    if not status in statuses:
+        raise ValueError(f"Your choices are: {', '.join(statuses)}")
+    return status
+
+def check_plan_code(plan_code: str) -> str:
+    if not plan_code.startswith('PLN_'):
+        raise ValueError("Invalid plan code: customer code must start with 'PLN_'")
+    return plan_code
+
+    

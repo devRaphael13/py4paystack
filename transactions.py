@@ -18,11 +18,6 @@ class Transaction(Request):
     def initialize(self, email: str, amount: int, currency: str, redirect_url: str, reference: str = None, plan: str = None, channels: str | list = None, split_code: str = None, transaction_charge: int = None, subaccount: str = None, bearer: str = 'account', metadata: dict = None):
         path = f'{self.path}/initialize'
 
-        assert isinstance(
-            redirect_url, str), "Provide a valid url on your server that the user will redirect to after payment eg. https://your_domain.com/wherever"
-        assert isinstance(
-            reference, str), "Provide a unique reference string that will be used for identification"
-
         payload = {
             'amount': amount,
             'email': util.check_email(email),
@@ -50,6 +45,7 @@ class Transaction(Request):
             payload['subaccount'] = util.check_subaccount(subaccount)
             if bearer:
                 payload['bearer'] = util.check_bearer(bearer)
+
         if metadata:
             payload['metadata'] = json.dumps(metadata)
 
@@ -68,7 +64,7 @@ class Transaction(Request):
         if status:
             params['status'] = util.check_transaction_status(status)
             
-        if any(params.values()):
+        if params:
             path += '?'
             for key, value in params.items():
                 path += f"{key}={value}&"
@@ -124,13 +120,12 @@ class Transaction(Request):
         payload = {
             'email': util.check_email(email),
             'amount': amount,
-            'currency': currency,
+            'currency': util.check_currency(currency),
             'authorization_code': util.check_auth_code(authorization_code),
             'reference': reference if reference else util.create_ref()
         }
 
         if at_least:
-            assert isinstance(at_least, str), "'at_least' must be of type str"
             assert at_least.isdigit(), "Invalid at_least value eg. '12000'"
             payload['at_least'] = at_least
 
@@ -139,7 +134,7 @@ class Transaction(Request):
     def totals(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
         path = f'{self.path}/totals'
         params = util.handle_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date).values()
-        if any(params):
+        if params:
             for value in params:
                 path += f'/{value}'
         return self.get(path, self.secret_key)
@@ -159,7 +154,7 @@ class Transaction(Request):
         if status:
             params['status'] = util.check_transaction_status(status)
 
-        if any(params.values()):
+        if params:
             path += '?'
             for key, value in params.items():
                 path += f"{key}={value}&"

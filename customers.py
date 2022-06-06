@@ -15,18 +15,16 @@ class Customer(Request):
         self.secret_key = secret_key
 
     def create(self, email: str, first_name: str, last_name: str, phone: int = None, metadata: dict = None):
-        path = self.path
         payload = locals()
         payload['email'] = util.check_email(email)
         if phone:
-
             payload['phone'] = f'+{phone}'
-        self.post(path, self.secret_key, payload)
+        self.post(self.path, self.secret_key, payload)
 
     def list_customers(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
         path = self.path
         params = util.handle_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date)
-        if any(params.values()):
+        if params:
             path += '?'
             for key, value in params.items():
                 path += f"{key}={value}&"

@@ -14,8 +14,6 @@ class DedicatedVirtualAccounts(Request):
         self.secret_key = secret_key
 
     def create(self, customer_code: str, preferred_bank: str, subaccount: str = None, split_code: str = None, first_name: str = None, last_name: str = None, phone: int = None):
-        path = self.path
-
         payload = {
             'customer': util.check_customer(customer_code),
             'preferred_bank': util.check_preferred_bank(preferred_bank)
@@ -36,7 +34,7 @@ class DedicatedVirtualAccounts(Request):
         if phone:
             payload['phone'] = f'+{phone}'
 
-        return self.post(path, self.secret_key, payload)
+        return self.post(self.path, self.secret_key, payload)
 
     def list_accounts(self, active: bool = None, currency: str = None, provider_slug: str = None, bank_id: int = None, customer_id: str = None):
         path = self.path

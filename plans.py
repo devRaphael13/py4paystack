@@ -1,6 +1,7 @@
 from . import util
 from .request import Request
 
+
 class Plan(Request):
 
     """
@@ -12,16 +13,59 @@ class Plan(Request):
     def __init__(self, secret_key):
         self.secret_key = secret_key
 
-    def create(self):
-        pass
+    def create(self, name: str, amount: int, interval: str, description: str = None, send_invoices: bool = None, send_sms: bool = None, currency: str = None, invoice_limit: int = None):
+        payload = {key: value for key, value in locals().items()
+                   if value is not None}
+        payload['interval'] = util.check_plan_interval(interval)
+        if currency:
+            payload['currency'] = util.check_currency(currency)
 
-    def list_plans(self):
-        pass
+        return self.post(self.path, self.secret_key, payload)
 
-    def fetch(self):
-        pass
+    def list_plans(self, per_page: int = None, page: int = None, status: str = None, interval: str = None, amount: int = None):
+        path = self.path
+        params = util.handle_query_params(per_page=per_page, page=page)
 
-    def update(self):
-        path = ''
-        payload = {}
+        if interval:
+            params['interval'] = util.check_plan_interval(interval)
+
+        if status:
+            params['status'] = util.check_plan_status(status)
+
+        if params:
+            path += '?'
+            for key, value in params.items():
+                path += f'{key}={value}&'
+        return self.get(path.rstrip('&'), self.secret_key)
+
+    def fetch(self, plan_id: int = None, plan_code: str = None):
+        path = self.path
+        if not (plan_id or plan_code):
+            raise ValueError("Provide plan id or code")
+
+        if plan_id:
+            path += str(plan_id)
+
+        if plan_code and not plan_id:
+            path += util.check_plan_code(plan_code)
+
+        return self.get(path, self.secret_key)
+
+    def update(self, plan_id: int = None, plan_code: str = None, name: str = None, interval: str = None, description: str = None, send_invoices: bool = None, send_sms: bool = None, invoice_limit: int = None):
+        path = self.path
+        if not (plan_id or plan_code):
+            raise ValueError("Provide plan id or code")
+
+        if plan_id:
+            path += str(plan_id)
+
+        if plan_code and not plan_id:
+            path += util.check_plan_code(plan_code)
+
+        payload = {key: value for key, value in locals().items() if key not in (
+            'plan_id', 'plan_code') and value is not None}
+
+        if interval:
+            payload['interval'] = util.check_plan_interval(interval)
+
         return self.put(path, self.secret_key, payload)

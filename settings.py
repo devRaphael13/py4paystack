@@ -18,7 +18,11 @@ IDENTIFICATION_TYPES = ('bank_account', 'bvn')
 
 RISK_ACTIONS = ('default', 'allow', 'deny')
 
-VIRTUAL_ACCOUNT_PROVIDERS = ( 'access-bank', 'wema-bank' )
+VIRTUAL_ACCOUNT_PROVIDERS = ('access-bank', 'wema-bank')
 
-SETTLEMENT_SCHEDULES = ( 'auto', 'weekly', 'monthly' )
+SETTLEMENT_SCHEDULES = ('auto', 'weekly', 'monthly')
 
+PLAN_INTERVALS = ('daily', 'weekly', 'monthly', 'biannually', 'annually')
+
+PLAN_STATUSES = ('active', 'complete', 'non-renewing',
+                 'attention', 'cancelled')
