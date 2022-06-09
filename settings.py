@@ -8,7 +8,8 @@ CODE_PREFIXES = {
     'CUS': 'customer',
     'AUTH': 'authorization',
     'SPL': 'split',
-    'PROD': 'product'
+    'PROD': 'product',
+    'PRQ': 'invoice'
 }
 
 CODE_NAMES = { value: key for key, value in CODE_PREFIXES.items() }

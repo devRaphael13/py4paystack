@@ -4,6 +4,7 @@ import datetime
 from . import settings
 from typing import Iterable
 
+
 def check_currency(currency) -> str:
     currencies = settings.CURRENCIES
     if not currency in currencies:
@@ -11,22 +12,26 @@ def check_currency(currency) -> str:
             f"Invalid currency: choices are {', '.join(currencies)}")
     return currency
 
+
 def check_split_type(split_type: str) -> str:
     split_types = settings.SPLIT_TYPES
     if not split_type in split_types:
         raise ValueError(f"Your choices are: {', '.join(split_types)}")
     return split_type
 
+
 def check_bvn(bvn: str) -> str:
     if not bvn.isdigit() or len(bvn) != 11:
         raise ValueError("bvn must contain only digits and be 11 digits long")
     return bvn
+
 
 def check_bearer(bearer) -> str:
     if not bearer in settings.BEARER_TYPES:
         raise ValueError(
             f"Invalid bearer: choices are {', '.join(settings.BEARER_TYPES)}")
     return bearer
+
 
 def create_ref() -> str:
     return str(uuid.uuid4()).replace('-', '')
@@ -143,11 +148,12 @@ def check_domain(domain: str) -> str:
         raise ValueError('Invalid domain')
     return domain
 
+
 def handle_query_params(per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None) -> dict | None:
     params = {}
     if per_page:
         params['perPage'] = per_page
-    
+
     if page:
         params['page'] = page
 
@@ -156,8 +162,9 @@ def handle_query_params(per_page: int = None, page: int = None, from_date: datet
 
     if to_date:
         params['to'] = handle_date(to_date)
-    
+
     return params
+
 
 def check_settlement_schedule(settlement_schedule: str) -> str:
     schedules = settings.SETTLEMENT_SCHEDULES
@@ -165,11 +172,13 @@ def check_settlement_schedule(settlement_schedule: str) -> str:
         raise ValueError(f"Your choices are: {', '.join(schedules)}")
     return settlement_schedule
 
+
 def check_plan_interval(interval: str) -> str:
     intervals = settings.PLAN_INTERVALS
     if not interval in intervals:
         raise ValueError(f"Your choices are: {', '.join(intervals)}")
     return interval
+
 
 def check_plan_status(status: str) -> str:
     statuses = settings.PLAN_STATUSES
@@ -177,16 +186,17 @@ def check_plan_status(status: str) -> str:
         raise ValueError(f"Your choices are: {', '.join(statuses)}")
     return status
 
+
 def check_code(prefix: str, code: Iterable | str) -> str | list:
     prefixes = settings.CODE_PREFIXES
-    if isinstance(code, ( str )):
+    if isinstance(code, (str)):
         code = tuple(code)
 
     for x in code:
         pre = x.split('_')[0]
         if pre != prefix:
-            raise ValueError("Invalid {0}: {0} must start with {1} not {2}".format(prefixes[prefix], prefix, pre))
+            raise ValueError("Invalid {0}: {0} must start with {1} not {2}".format(
+                prefixes[prefix], prefix, pre))
     if len(code) == 1:
         return code[0]
     return code
-
