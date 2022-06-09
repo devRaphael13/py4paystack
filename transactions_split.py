@@ -31,7 +31,7 @@ class TransactionSplit(Request):
 
     def list_search(self, name: str = None, active: bool = None, sort_by: str = None, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
         path = self.path
-        params = util.handle_query_params(
+        params = util.check_query_params(
             per_page=per_page, page=page, from_date=from_date, to_date=to_date)
         params.update({key: value for key, value in locals().items()
                       if value is not None and key not in params})

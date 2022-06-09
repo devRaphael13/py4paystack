@@ -28,12 +28,10 @@ class SubAccounts(Request):
 
     def list_subaccounts(self, per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None):
         path = self.path
-        params = util.handle_query_params(
+        params = util.check_query_params(
             per_page=per_page, page=page, from_date=from_date, to_date=to_date)
         if params:
-            path += '?'
-            for key, value in params:
-                path += f'{key}={value}'
+            path = util.handle_query_params(path, params)
         return self.get(path, self.secret_key)
 
     def fetch(self, subaccount_id: int = None, subaccount_code: str = None):
@@ -45,7 +43,8 @@ class SubAccounts(Request):
             path += str(subaccount_id)
 
         if subaccount_code and not subaccount_id:
-            path += util.check_code(settings.CODE_NAMES['subaccount'], subaccount_code)
+            path += util.check_code(
+                settings.CODE_NAMES['subaccount'], subaccount_code)
 
         return self.get(path, self.secret_key)
 
@@ -59,7 +58,8 @@ class SubAccounts(Request):
             path += str(subaccount_id)
 
         if subaccount_code and not subaccount_id:
-            path += util.check_code(settings.CODE_NAMES['subaccount'], subaccount_code)
+            path += util.check_code(
+                settings.CODE_NAMES['subaccount'], subaccount_code)
 
         payload = {key: value for key, value in locals().items() if key not in (
             'subaccount_id', 'subaccount_code') and value is not None}
@@ -78,8 +78,5 @@ class SubAccounts(Request):
         if primary_contact_email:
             payload['primary_contact_email'] = util.check_email(
                 primary_contact_email)
-            
-        return self.put(path, self.secret_key, payload=payload)
 
-    
-    
+        return self.put(path, self.secret_key, payload=payload)

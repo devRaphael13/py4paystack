@@ -29,19 +29,22 @@ class Transaction(Request):
 
         if plan:
             payload.pop('amount')
-            payload['plan'] = util.check_code(settings.CODE_NAMES['plan'], plan)
+            payload['plan'] = util.check_code(
+                settings.CODE_NAMES['plan'], plan)
 
         if channels:
             payload['channels'] = util.check_channels(channels)
 
         if split_code:
-            payload['split_code'] = util.check_code(settings.CODE_NAMES['split'], split_code)
+            payload['split_code'] = util.check_code(
+                settings.CODE_NAMES['split'], split_code)
 
         if transaction_charge:
             payload['transaction_charge'] = transaction_charge
 
         if subaccount:
-            payload['subaccount'] = util.check_code(settings.CODE_NAMES['subaccount'], subaccount)
+            payload['subaccount'] = util.check_code(
+                settings.CODE_NAMES['subaccount'], subaccount)
             if bearer:
                 payload['bearer'] = util.check_bearer(bearer)
 
@@ -57,16 +60,16 @@ class Transaction(Request):
 
     def list_transactions(self, per_page: int = None, page: int = None, customer: int = None, status: str = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None, amount: int = None):
         path = self.path
-        params = util.handle_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date)
-        params.update({ key: value for key, value in locals().items() if value is not None and key not in params })
+        params = util.check_query_params(
+            per_page=per_page, page=page, from_date=from_date, to_date=to_date)
+        params.update({key: value for key, value in locals().items()
+                      if value is not None and key not in params})
 
         if status:
             params['status'] = util.check_transaction_status(status)
-            
+
         if params:
-            path += '?'
-            for key, value in params.items():
-                path += f"{key}={value}&"
+            path = util.handle_query_params(path, params)
         return self.get(path.rstrip('&'), self.secret_key)
 
     def fetch(self, transaction_id: int):
@@ -90,7 +93,7 @@ class Transaction(Request):
         payload = {
             'email': util.check_email(email),
             'amount': amount,
-            'authorization_code': util.check_code(settings.CODE_NAMES['authorization'] , authorization_code),
+            'authorization_code': util.check_code(settings.CODE_NAMES['authorization'], authorization_code),
             'reference': reference if reference else util.create_ref(),
             'currency': util.check_currency(currency)
         }
@@ -102,10 +105,12 @@ class Transaction(Request):
             payload['queue'] = True
 
         if split_code:
-            payload['split_code'] = util.check_code(settings.CODE_NAMES['split'], split_code)
+            payload['split_code'] = util.check_code(
+                settings.CODE_NAMES['split'], split_code)
 
         if subaccount:
-            payload['subaccount'] = util.check_code(settings.CODE_NAMES['subaccount'], subaccount)
+            payload['subaccount'] = util.check_code(
+                settings.CODE_NAMES['subaccount'], subaccount)
             if bearer:
                 payload['bearer'] = util.check_bearer(bearer)
 
@@ -132,10 +137,10 @@ class Transaction(Request):
 
     def totals(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
         path = f'{self.path}/totals'
-        params = util.handle_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date).values()
+        params = util.check_query_params(
+            per_page=per_page, page=page, from_date=from_date, to_date=to_date).values()
         if params:
-            for value in params:
-                path += f'/{value}'
+            path = util.handle_query_params(path, params)
         return self.get(path, self.secret_key)
 
     def timeline(self, id_or_reference: int | str = None):
@@ -144,17 +149,17 @@ class Transaction(Request):
 
     def export(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None, status: str = None, currency: str = None, amount: int = None, settled: bool = None, settlement: int = None, payment_page: int = None):
         path = f'{self.path}/export'
-        params = util.handle_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date)
-        params.update({ key: value for key, value in locals().items() if value is not None and key not in params })
-        
+        params = util.check_query_params(
+            per_page=per_page, page=page, from_date=from_date, to_date=to_date)
+        params.update({key: value for key, value in locals().items()
+                      if value is not None and key not in params})
+
         if currency:
             params['currency'] = util.check_currency(currency)
-        
+
         if status:
             params['status'] = util.check_transaction_status(status)
 
         if params:
-            path += '?'
-            for key, value in params.items():
-                path += f"{key}={value}&"
-        return self.get(path.rstrip('&'), self.secret_key)
+            path = util.handle_query_params(path, params)
+        return self.get(path, self.secret_key)

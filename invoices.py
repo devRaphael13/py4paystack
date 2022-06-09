@@ -44,14 +44,11 @@ class Invoice(Request):
 
     def list_invoices(self, per_page: int = None, page: int = None, customer: int = None, status: str = None, from_date: date | datetime | str = None, to_date: date | datetime | str = None, include_archive: str = None):
         path = self.path
-
         params = {key: value for key, value in locals().items() if value is not None}.update(
-            util.handle_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date))
+            util.check_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date))
         if params:
-            path += '?'
-            for key, value in params:
-                path += f"{key}={value}&"
-        return self.get(path.rstrip('&'), self.secret_key)
+            path = util.handle_query_params(path, params)
+        return self.get(path, self.secret_key)
 
     def view(self, invoice_id: int = None, invoice_code: str = None):
         path = self.path

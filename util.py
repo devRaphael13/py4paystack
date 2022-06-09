@@ -149,7 +149,7 @@ def check_domain(domain: str) -> str:
     return domain
 
 
-def handle_query_params(per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None) -> dict | None:
+def check_query_params(per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None) -> dict | None:
     params = {}
     if per_page:
         params['perPage'] = per_page
@@ -164,6 +164,12 @@ def handle_query_params(per_page: int = None, page: int = None, from_date: datet
         params['to'] = handle_date(to_date)
 
     return params
+
+def handle_query_params(path: str, params: dict):
+    path += '?'
+    for key, value in params.items():
+        path += f"{key}={value}&"
+    return path.rstrip('&')
 
 
 def check_settlement_schedule(settlement_schedule: str) -> str:

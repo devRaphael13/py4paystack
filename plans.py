@@ -24,8 +24,7 @@ class Plan(Request):
         return self.post(self.path, self.secret_key, payload=payload)
 
     def list_plans(self, per_page: int = None, page: int = None, status: str = None, interval: str = None, amount: int = None):
-        path = self.path
-        params = util.handle_query_params(per_page=per_page, page=page)
+        params = util.check_query_params(per_page=per_page, page=page)
 
         if interval:
             params['interval'] = util.check_plan_interval(interval)
@@ -34,10 +33,8 @@ class Plan(Request):
             params['status'] = util.check_plan_status(status)
 
         if params:
-            path += '?'
-            for key, value in params.items():
-                path += f'{key}={value}&'
-        return self.get(path.rstrip('&'), self.secret_key)
+            path = util.handle_query_params(self.path, params)
+        return self.get(path, self.secret_key)
 
     def fetch(self, plan_id: int = None, plan_code: str = None):
         path = self.path

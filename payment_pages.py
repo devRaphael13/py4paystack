@@ -21,12 +21,10 @@ class PaymentPages(Request):
 
     def list_pages(self, per_page: int = None, page: int = None, from_date: date | datetime | str = None, to_date: date | datetime | str = None):
         path = self.path
-        params = util.handle_query_params(
+        params = util.check_query_params(
             per_page=per_page, page=page, from_date=from_date, to_date=to_date)
         if params:
-            path += '?'
-            for key, value in params.items():
-                path += f"{key}={value}&"
+            path = util.handle_query_params(path, params)
         return self.get(path, self.secret_key)
 
     def fetch(self, id_or_slug: int | str):

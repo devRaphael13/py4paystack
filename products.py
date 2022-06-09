@@ -30,12 +30,10 @@ class Product(Request):
 
     def list_products(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
         path = self.path
-        params = util.handle_query_params(
+        params = util.check_query_params(
             per_page=per_page, page=page, from_date=from_date, to_date=to_date)
         if params:
-            path += '?'
-            for key, value in params.items():
-                path += f"{key}={value}&"
+            path = util.handle_query_params(path, params)
         return self.get(path, self.secret_key)
 
     def fetch(self, product_id: int):

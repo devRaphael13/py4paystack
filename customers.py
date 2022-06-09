@@ -3,6 +3,7 @@ from . import util
 from .request import Request
 from . import settings
 
+
 class Customer(Request):
 
     """
@@ -23,12 +24,11 @@ class Customer(Request):
 
     def list_customers(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
         path = self.path
-        params = util.handle_query_params(per_page=per_page, page=page, from_date=from_date, to_date=to_date)
+        params = util.check_query_params(
+            per_page=per_page, page=page, from_date=from_date, to_date=to_date)
         if params:
-            path += '?'
-            for key, value in params.items():
-                path += f"{key}={value}&"
-        return self.get(path.rstrip('&'), self.secret_key)
+            path = util.handle_query_params(path, params)
+        return self.get(path, self.secret_key)
 
     def fetch(self, email_or_customer_code: str):
         path = f'{self.path}/{util.check_email_or_customer(email_or_customer_code)}'
@@ -75,6 +75,7 @@ class Customer(Request):
     def deactivate_authorization(self, authorization_code: str):
         path = f'{self.path}/deactivate_authorization'
 
-        payload = {'authorization_code': util.check_code(settings.CODE_NAMES['authorization'], authorization_code)}
+        payload = {'authorization_code': util.check_code(
+            settings.CODE_NAMES['authorization'], authorization_code)}
 
         return self.post(path, self.secret_key, payload=payload)

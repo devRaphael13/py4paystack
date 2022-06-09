@@ -33,14 +33,12 @@ class Subscription(Request):
     def list_subscriptions(self, per_page: int = None, page: int = None, customer: int = None, plan: int = None):
         path = self.path
 
-        params = util.handle_query_params(per_page=per_page, page=page)
+        params = util.check_query_params(per_page=per_page, page=page)
         params.update({key: value for key, value in locals().items()
                       if key not in params and value is not None})
 
         if params:
-            path += '?'
-            for key, value in params.items():
-                path += f'{key}={value}'
+            path = util.handle_query_params(path, params)
 
         return self.get(path, self.secret_key)
 
