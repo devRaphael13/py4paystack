@@ -1,6 +1,5 @@
 from datetime import date, datetime
 from .request import Request
-from . import settings
 from . import util
 
 

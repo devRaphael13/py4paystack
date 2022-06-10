@@ -9,10 +9,11 @@ CODE_PREFIXES = {
     'AUTH': 'authorization',
     'SPL': 'split',
     'PROD': 'product',
-    'PRQ': 'invoice'
+    'PRQ': 'invoice',
+    'RCP': 'recipient'
 }
 
-CODE_NAMES = { value: key for key, value in CODE_PREFIXES.items() }
+CODE_NAMES = {value: key for key, value in CODE_PREFIXES.items()}
 
 ACCOUNT_TYPES = ('personal', 'business')
 
@@ -39,3 +40,5 @@ PLAN_INTERVALS = ('daily', 'weekly', 'monthly', 'biannually', 'annually')
 
 PLAN_STATUSES = ('active', 'complete', 'non-renewing',
                  'attention', 'cancelled')
+
+RECIPIENT_TYPES = ('nuban', 'mobile_money', 'basa', 'authorization')

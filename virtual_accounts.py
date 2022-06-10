@@ -39,20 +39,16 @@ class DedicatedVirtualAccounts(Request):
 
     def list_accounts(self, active: bool = None, currency: str = None, provider_slug: str = None, bank_id: int = None, customer_id: str = None):
         path = self.path
-        args = locals()
-        if any(locals().values()):
-            path += '?'
-            if currency:
-                args['currency'] = util.check_currency(currency)
+        params = { key: value for key, value in locals().items() if value is not None }
+        if currency:
+            params['currency'] = util.check_currency(currency)
 
-            if provider_slug:
-                args['provider_slug'] = util.check_preferred_bank(
-                    provider_slug)
-
-            for key, value in args.items():
-                if value is not None:
-                    path += f'{key}={value}&'
-        return self.get(path.rstrip('&'), self.secret_key)
+        if provider_slug:
+            params['provider_slug'] = util.check_preferred_bank(provider_slug)
+        
+        if params:
+            path = util.handle_query_params(path, params)
+        return self.get(path, self.secret_key)
 
     def fetch(self, dedicated_account_id: int):
         path = f'{self.path}/{dedicated_account_id}'

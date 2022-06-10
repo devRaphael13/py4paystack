@@ -57,10 +57,10 @@ class Invoice(Request):
             raise ValueError('provide either request id or code')
 
         if invoice_id:
-            path += f"{invoice_id}/"
+            path += f"/{invoice_id}"
 
         if invoice_code and not invoice_id:
-            path += f"{util.check_code(settings.CODE_NAMES['invoice'], invoice_code)}/"
+            path += f"/{util.check_code(settings.CODE_NAMES['invoice'], invoice_code)}"
 
         return self.get(path, self.secret_key)
 
@@ -87,10 +87,10 @@ class Invoice(Request):
             raise ValueError('provide either request id or code')
 
         if invoice_id:
-            path += f"{invoice_id}/"
+            path += f"/{invoice_id}"
 
         if invoice_code and not invoice_id:
-            path += f"{util.check_code(settings.CODE_NAMES['invoice'], invoice_code)}/"
+            path += f"/{util.check_code(settings.CODE_NAMES['invoice'], invoice_code)}"
 
         if not (customer_code or customer_id):
             raise ValueError("provide either customer_code or customer_id")
@@ -131,9 +131,9 @@ class Invoice(Request):
             raise ValueError('provide either request id or code')
 
         if invoice_id:
-            path += f"{invoice_id}/"
+            path += f"/{invoice_id}"
 
         if invoice_code and not invoice_id:
-            path += f"{util.check_code(settings.CODE_NAMES['invoice'], invoice_code)}/"
+            path += f"/{util.check_code(settings.CODE_NAMES['invoice'], invoice_code)}"
 
         return self.get(path, self.secret_key)

@@ -165,6 +165,7 @@ def check_query_params(per_page: int = None, page: int = None, from_date: dateti
 
     return params
 
+
 def handle_query_params(path: str, params: dict):
     path += '?'
     for key, value in params.items():
@@ -206,3 +207,10 @@ def check_code(prefix: str, code: Iterable | str) -> str | list:
     if len(code) == 1:
         return code[0]
     return code
+
+
+def check_recipient_type(recipient_type: str):
+    recipient_types = settings.RECIPIENT_TYPES
+    if recipient_type not in recipient_types:
+        raise ValueError(f"Your choices are: {', '.join(recipient_types)}")
+    return recipient_type

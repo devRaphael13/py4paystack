@@ -40,11 +40,10 @@ class SubAccounts(Request):
             raise ValueError("Provide a subaccount id or code")
 
         if subaccount_id:
-            path += str(subaccount_id)
+            path += f"/{subaccount_id}"
 
         if subaccount_code and not subaccount_id:
-            path += util.check_code(
-                settings.CODE_NAMES['subaccount'], subaccount_code)
+            path += f"/{util.check_code(settings.CODE_NAMES['subaccount'], subaccount_code)}"
 
         return self.get(path, self.secret_key)
 
@@ -55,11 +54,10 @@ class SubAccounts(Request):
             raise ValueError("Provide a subaccount id or code")
 
         if subaccount_id:
-            path += str(subaccount_id)
+            path += f"/{subaccount_id}"
 
         if subaccount_code and not subaccount_id:
-            path += util.check_code(
-                settings.CODE_NAMES['subaccount'], subaccount_code)
+            path += f"/{util.check_code(settings.CODE_NAMES['subaccount'], subaccount_code)}"
 
         payload = {key: value for key, value in locals().items() if key not in (
             'subaccount_id', 'subaccount_code') and value is not None}

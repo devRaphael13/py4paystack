@@ -42,10 +42,10 @@ class Plan(Request):
             raise ValueError("Provide plan id or code")
 
         if plan_id:
-            path += str(plan_id)
+            path += f'/{plan_id}'
 
         if plan_code and not plan_id:
-            path += util.check_code(settings.CODE_NAMES['plan'], plan_code)
+            path += f"/{util.check_code(settings.CODE_NAMES['plan'], plan_code)}"
 
         return self.get(path, self.secret_key)
 
@@ -55,10 +55,10 @@ class Plan(Request):
             raise ValueError("Provide plan id or code")
 
         if plan_id:
-            path += str(plan_id)
+            path += f"/{plan_id}"
 
         if plan_code and not plan_id:
-            path += util.check_code(settings.CODE_NAMES['plan'], plan_code)
+            path += f"/{util.check_code(settings.CODE_NAMES['plan'], plan_code)}"
 
         payload = {key: value for key, value in locals().items() if key not in (
             'plan_id', 'plan_code') and value is not None}

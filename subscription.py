@@ -48,11 +48,10 @@ class Subscription(Request):
             raise ValueError("Provide subscription id or code")
 
         if subscription_id:
-            path += str(subscription_id)
+            path += f"/{subscription_id}"
 
         if subscription_code and not subscription_id:
-            path += util.check_code(
-                settings.CODE_NAMES['subscription'], subscription_code)
+            path += f"/{util.check_code(settings.CODE_NAMES['subscription'], subscription_code)}"
 
         return self.get(path, self.secret_key)
 

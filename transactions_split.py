@@ -36,10 +36,8 @@ class TransactionSplit(Request):
         params.update({key: value for key, value in locals().items()
                       if value is not None and key not in params})
         if params:
-            path += '?'
-            for key, value in params.items():
-                path += f"{key}={value}&"
-        return self.get(path.rstrip('&'), self.secret_key)
+            path = util.handle_query_params(path, params)
+        return self.get(path, self.secret_key)
 
     def fetch(self, split_id: int):
         path = f'{self.path}/{split_id}'
