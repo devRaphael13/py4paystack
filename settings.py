@@ -46,3 +46,5 @@ RECIPIENT_TYPES = ('nuban', 'mobile_money', 'basa', 'authorization')
 
 TRANSFER_SOURCES = ('balance',)
 
+TRANSFER_CONTROL_REASONS = ('resend_otp', 'transfer')
+
