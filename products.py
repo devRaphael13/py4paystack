@@ -16,7 +16,7 @@ class Product(Request):
     def create(self, name: str, description: str, price: int, currency: str, unlimited: bool = None, quantity: int = None):
         payload = {key: value for key, value in locals().items()
                    if value is not None}
-        payload['currency'] = util.check_currency(currency)
+        payload['currency'] = util.check_membership(settings.CURRENCIES, currency, 'currency')
 
         if quantity and quantity != 0:
             assert unlimited is None or unlimited is False, "set unlimited to False then set quantity, set unlimited to True otherwise."
@@ -46,7 +46,7 @@ class Product(Request):
         ).items() if key != 'product_id' and value is not None}
 
         if currency:
-            payload['currency'] = util.check_currency(currency)
+            payload['currency'] = util.check_membership(settings.CURRENCIES, currency, 'currency')
 
         if quantity and quantity != 0:
             assert unlimited is None or unlimited is False, "set unlimited to False then set quantity, set unlimited to True otherwise."

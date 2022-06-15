@@ -34,7 +34,7 @@ class Invoice(Request):
                 settings.CODE_NAMES['customer'], customer_code)
 
         if currency:
-            payload['currency'] = util.check_currency(currency)
+            payload['currency'] = util.check_membership(settings.CURRENCIES, currency, 'currency')
 
         if split_code:
             payload['split_code'] = util.check_code(
@@ -113,7 +113,7 @@ class Invoice(Request):
                 settings.CODE_NAMES['customer'], customer_code)
 
         if currency:
-            payload['currency'] = util.check_currency(currency)
+            payload['currency'] = util.check_membership(settings.CURRENCIES, currency, 'currency')
 
         if due_date:
             payload['due_date'] = util.handle_date(due_date)

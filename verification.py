@@ -1,5 +1,6 @@
 from .request import Request
 from . import util
+from . import settings
 
 class Verification(Request):
 
@@ -19,10 +20,10 @@ class Verification(Request):
         payload = {
             'account_name': account_name,
             'account_number': util.check_account_number(account_number),
-            'account_type': util.check_account_types(account_type),
+            'account_type': util.check_membership(settings.ACCOUNT_TYPES, account_type, 'account_type'),
             'bank_code': util.check_bank_code(bank_code),
             'country_code': util.check_country(country_code),
-            'document_type': util.check_document_type(document_type),
+            'document_type': util.check_membership(settings.DOCUMENT_TYPES, document_type, 'document_type'),
             'document_number': document_number
         }
         return self.post(path, self.secret_key, payload=payload)

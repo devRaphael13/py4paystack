@@ -46,7 +46,7 @@ class Customer(Request):
         payload = {
             'first_name': first_name,
             'last_name': last_name,
-            'type': util.check_identification_type(identification_type),
+            'type': util.check_membership(settings.IDENTIFICATION_TYPES, identification_type, 'identification_type'),
             'country': util.check_country(country),
             'bvn': util.check_bvn(bvn)
         }
@@ -66,7 +66,7 @@ class Customer(Request):
         path = f'{self.path}/set_risk_action'
 
         payload = {
-            'risk_action': util.check_risk_action(risk_action),
+            'risk_action': util.check_membership(settings.RISK_ACTIONS, risk_action, 'risk_action'),
             'customer': util.check_email_or_customer(email_or_customer_code)
         }
 

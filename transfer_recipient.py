@@ -22,9 +22,7 @@ class TransferRecipient(Request):
             raise ValueError(
                 f"missing arguments: provide recipient_type or type based on the type of recipient you want to create, your choices are: {', '.join(settings.RECIPIENT_TYPES)}")
 
-        payload['type'] = util.check_recipient_type(payload.pop(
-            'recipient_type')) if 'recipient_type' in payload else util.check_recipient_type(payload['type'])
-
+        payload['type'] = util.check_membership(settings.RECIPIENT_TYPES, payload.get('recipient_type') or payload.get('type'), 'type')
         r_type = payload.get('type')
 
         if r_type == 'authorization':
@@ -56,7 +54,7 @@ class TransferRecipient(Request):
 
         currency = payload.get('currency')
         if currency:
-            payload['currency'] = util.check_currency(currency)
+            payload['currency'] = util.check_membership(settings.CURRENCIES, currency, 'currency')
 
         return payload
 

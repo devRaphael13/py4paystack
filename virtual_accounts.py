@@ -17,7 +17,7 @@ class DedicatedVirtualAccounts(Request):
     def create(self, customer_code: str, preferred_bank: str, subaccount: str = None, split_code: str = None, first_name: str = None, last_name: str = None, phone: int = None):
         payload = {
             'customer': util.check_code(settings.CODE_NAMES['customer'], customer_code),
-            'preferred_bank': util.check_preferred_bank(preferred_bank)
+            'preferred_bank': util.check_membership(settings.VIRTUAL_ACCOUNT_PROVIDERS, preferred_bank, 'preferred_bank')
         }
 
         if subaccount:
@@ -41,10 +41,10 @@ class DedicatedVirtualAccounts(Request):
         path = self.path
         params = { key: value for key, value in locals().items() if value is not None }
         if currency:
-            params['currency'] = util.check_currency(currency)
+            params['currency'] = util.check_membership(settings.CURRENCIES, currency, 'currency')
 
         if provider_slug:
-            params['provider_slug'] = util.check_preferred_bank(provider_slug)
+            params['provider_slug'] = util.check_membership(settings.VIRTUAL_ACCOUNT_PROVIDERS, provider_slug, 'provider_slug')
         
         if params:
             path = util.handle_query_params(path, params)
@@ -55,7 +55,7 @@ class DedicatedVirtualAccounts(Request):
         return self.get(path, self.secret_key)
 
     def requery(self, account_number: str, provider_slug: str, date: str = None):
-        path = f'{self.path}/requery?account_number={util.check_account_number(account_number)}&provider_slug={util.check_preferred_bank(provider_slug)}'
+        path = f"{self.path}/requery?account_number={util.check_account_number(account_number)}&provider_slug={util.check_membership(settings.VIRTUAL_ACCOUNT_PROVIDERS, provider_slug, 'provider_slug')}"
         if date:
             path += f'&date={util.handle_date(date)}'
         return self.get(path, self.secret_key)
@@ -68,7 +68,7 @@ class DedicatedVirtualAccounts(Request):
         path = f'{self.path}/split'
 
         payload = {
-            'preferred_bank': util.check_preferred_bank(preferred_bank)
+            'preferred_bank': util.check_membership(settings.VIRTUAL_ACCOUNT_PROVIDERS, preferred_bank, 'preferred_bank')
         }
         if not ( customer_code or customer_id ):
             raise ValueError('Provide the customer_code or the customer_id')

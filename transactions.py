@@ -16,16 +16,21 @@ class Transaction(Request):
     def __init__(self, secret_key: str) -> None:
         self.secret_key = secret_key
 
-    def initialize(self, email: str, amount: int, currency: str, redirect_url: str, reference: str = None, plan: str = None, channels: str | list = None, split_code: str = None, transaction_charge: int = None, subaccount: str = None, bearer: str = 'account', metadata: dict = None):
+    def initialize(self, email: str, amount: int, currency: str, redirect_url: str, reference: str = None, plan: str = None, channels: str | list = None, split_code: str = None, transaction_charge: int = None, subaccount: str = None, bearer: str = 'account', metadata: dict = None, generate_reference: bool = False):
         path = f'{self.path}/initialize'
 
         payload = {
             'amount': amount,
             'email': util.check_email(email),
-            'currency': util.check_currency(currency),
-            'reference': reference if reference else util.create_ref(),
+            'currency': util.check_membership(settings.CURRENCIES, currency, 'currency'),
             'callback_url': redirect_url
         }
+
+        if generate_reference:
+            payload['reference'] = util.create_ref()
+
+        if reference:
+            payload['reference'] = reference
 
         if plan:
             payload.pop('amount')
@@ -46,7 +51,7 @@ class Transaction(Request):
             payload['subaccount'] = util.check_code(
                 settings.CODE_NAMES['subaccount'], subaccount)
             if bearer:
-                payload['bearer'] = util.check_bearer(bearer)
+                payload['bearer'] = util.check_membership(settings.BEARER_TYPES, bearer, 'bearer_type')
 
         if metadata:
             payload['metadata'] = json.dumps(metadata)
@@ -55,7 +60,6 @@ class Transaction(Request):
 
     def verify(self, reference: str):
         path = f'{self.path}/verify/{reference}'
-        assert isinstance(reference, str), 'reference must be of type str'
         return self.get(path, self.secret_key)
 
     def list_transactions(self, per_page: int = None, page: int = None, customer: int = None, status: str = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None, amount: int = None):
@@ -66,7 +70,7 @@ class Transaction(Request):
                       if value is not None and key not in params})
 
         if status:
-            params['status'] = util.check_transaction_status(status)
+            params['status'] = util.check_membership(settings.TRANSACTION_STATUS, status, 'status')
 
         if params:
             path = util.handle_query_params(path, params)
@@ -83,20 +87,25 @@ class Transaction(Request):
             'email': util.check_email(email),
             'amount': amount,
             'authorization_code': util.check_code(settings.CODE_NAMES['authorization'], authorization_code),
-            'currency': util.check_currency(currency)
+            'currency': util.check_membership(settings.CURRENCIES, currency, 'currency')
         }
         return self.post(path, self.secret_key, payload=payload)
 
-    def charge_authorization(self, email: str, amount: int, authorization_code: str, currency: str, reference: str = None, channels: list | str = None, queue: bool = False, split_code: str = None, subaccount: str = None, transaction_charge: int = None, bearer: str = 'account'):
+    def charge_authorization(self, email: str, amount: int, authorization_code: str, currency: str, reference: str  = None, channels: list | str = None, queue: bool = False, split_code: str = None, subaccount: str = None, transaction_charge: int = None, bearer: str = 'account', generate_reference: bool = False):
         path = f'{self.path}/charge_authorization'
 
         payload = {
             'email': util.check_email(email),
             'amount': amount,
             'authorization_code': util.check_code(settings.CODE_NAMES['authorization'], authorization_code),
-            'reference': reference if reference else util.create_ref(),
-            'currency': util.check_currency(currency)
+            'currency': util.check_membership(settings.CURRENCIES, currency, 'currency')
         }
+
+        if generate_reference:
+            payload['reference'] = util.create_ref()
+
+        if reference:
+            payload['reference'] = reference
 
         if channels:
             payload.update(util.check_channels(channels))
@@ -112,22 +121,27 @@ class Transaction(Request):
             payload['subaccount'] = util.check_code(
                 settings.CODE_NAMES['subaccount'], subaccount)
             if bearer:
-                payload['bearer'] = util.check_bearer(bearer)
+                payload['bearer'] = util.check_membership(settings.BEARER_TYPES, bearer, 'bearer_type')
 
         if transaction_charge:
             payload['transaction_charge'] = transaction_charge
 
         return self.post(path, self.secret_key, payload=payload)
 
-    def part_payment(self, email: str, amount: int, currency: str, authorization_code: str, reference: str = None, at_least: str = None):
+    def part_payment(self, email: str, amount: int, currency: str, authorization_code: str, reference: str = None, at_least: str = None, generate_reference: bool = False):
         path = f'{self.path}/part_debit'
         payload = {
             'email': util.check_email(email),
             'amount': amount,
-            'currency': util.check_currency(currency),
+            'currency': util.check_membership(settings.CURRENCIES, currency, 'currency'),
             'authorization_code': util.check_code(settings.CODE_NAMES['authorization'], authorization_code),
-            'reference': reference if reference else util.create_ref()
         }
+
+        if generate_reference:
+            payload['reference'] = util.create_ref()
+
+        if reference:
+            payload['reference'] = reference
 
         if at_least:
             assert at_least.isdigit(), "Invalid at_least value eg. '12000'"
@@ -155,10 +169,10 @@ class Transaction(Request):
                       if value is not None and key not in params})
 
         if currency:
-            params['currency'] = util.check_currency(currency)
+            params['currency'] = util.check_membership(settings.CURRENCIES, currency, 'currency')
 
         if status:
-            params['status'] = util.check_transaction_status(status)
+            params['status'] = util.check_membership(settings.TRANSACTION_STATUS, status, 'status')
 
         if params:
             path = util.handle_query_params(path, params)

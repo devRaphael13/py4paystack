@@ -10,8 +10,9 @@ CODE_PREFIXES = {
     'SPL': 'split',
     'PROD': 'product',
     'PRQ': 'invoice',
-    'RCP': 'recipient'
-}
+    'RCP': 'recipient',
+    'TRF': 'transfer'
+    }
 
 CODE_NAMES = {value: key for key, value in CODE_PREFIXES.items()}
 
@@ -42,3 +43,6 @@ PLAN_STATUSES = ('active', 'complete', 'non-renewing',
                  'attention', 'cancelled')
 
 RECIPIENT_TYPES = ('nuban', 'mobile_money', 'basa', 'authorization')
+
+TRANSFER_SOURCES = ('balance',)
+

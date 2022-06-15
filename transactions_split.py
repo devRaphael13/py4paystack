@@ -18,9 +18,9 @@ class TransactionSplit(Request):
     def create(self, name: str, split_type: str, currency: str, subaccounts: Iterable[tuple[str, int]], bearer_type: str, bearer_subaccount: str):
         payload = {
             'name': name,
-            'type': util.check_split_type(split_type),
-            'currency': util.check_currency(currency),
-            'bearer_type': util.check_bearer(bearer_type),
+            'type': util.check_membership(settings.SPLIT_TYPES, split_type, 'split_type'),
+            'currency': util.check_membership(settings.CURRENCIES, currency, 'currency'),
+            'bearer_type': util.check_membership(settings.BEARER_TYPES, bearer_type, 'bearer_type'),
             'subaccounts': [{ 'subaccount': util.check_code(settings.CODE_NAMES['subaccount'], subaccount), 'share': share } for subaccount, share in subaccounts],
         }
 
@@ -49,7 +49,7 @@ class TransactionSplit(Request):
         ).items() if key != 'split_id' and value is not None}
 
         if bearer_type:
-            payload['bearer_type'] = util.check_bearer(bearer_type)
+            payload['bearer_type'] = util.check_membership(settings.BEARER_TYPES, bearer_type, 'bearer_type')
 
         if 'bearer_type' in payload and payload['bearer_type'] != 'subaccount':
             payload.pop('bearer_subaccount')

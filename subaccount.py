@@ -66,8 +66,7 @@ class SubAccounts(Request):
             payload['settlement_bank'] = util.check_bank_code(settlement_bank)
 
         if settlement_schedule:
-            payload['settlement_schedule'] = util.check_settlement_schedule(
-                settlement_schedule)
+            payload['settlement_schedule'] = util.check_membership(settings.SETTLEMENT_SCHEDULES, settlement_schedule, 'settlement_schedule')
 
         if account_number:
             payload['account_number'] = util.check_account_number(
