@@ -11,7 +11,8 @@ CODE_PREFIXES = {
     'PROD': 'product',
     'PRQ': 'invoice',
     'RCP': 'recipient',
-    'TRF': 'transfer'
+    'TRF': 'transfer',
+    'BCH': 'bulk_charge_batch'
     }
 
 CODE_NAMES = {value: key for key, value in CODE_PREFIXES.items()}
@@ -47,4 +48,6 @@ RECIPIENT_TYPES = ('nuban', 'mobile_money', 'basa', 'authorization')
 TRANSFER_SOURCES = ('balance',)
 
 TRANSFER_CONTROL_REASONS = ('resend_otp', 'transfer')
+
+BULK_CHARGE_STATUSES = ( 'active', 'paused', 'complete' )
 

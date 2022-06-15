@@ -1,5 +1,6 @@
 import http.client
 import json
+from typing import Sequence
 
 
 class Request:
@@ -34,17 +35,17 @@ class Request:
         return headers
 
     @classmethod
-    def post(cls, path: str, secret_key: str, payload: dict):
+    def post(cls, path: str, secret_key: str, payload: dict | Sequence):
         return cls.request(path, 'POST', headers=cls.change_headers(secret_key), payload=json.dumps(payload))
 
     @classmethod
     def put(cls, path: str, secret_key: str, payload: dict):
         return cls.request(path, 'PUT', headers=cls.change_headers(secret_key), payload=json.dumps(payload))
-    
+
     @classmethod
     def delete(cls, path: str, secret_key: str, payload: dict = None):
         method = 'DELETE'
         if payload:
             return cls.request(path, method, headers=cls.change_headers(secret_key), payload=payload)
         auth = cls.headers.pop('authorization').format(secret_key)
-        return cls.request(path, method, headers={ 'authorization': auth })
+        return cls.request(path, method, headers={'authorization': auth})
