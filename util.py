@@ -10,6 +10,7 @@ def check_bvn(bvn: str) -> str:
         raise ValueError("bvn must contain only digits and be 11 digits long")
     return bvn
 
+
 def create_ref() -> str:
     return str(uuid.uuid4()).replace('-', '')
 
@@ -49,6 +50,7 @@ def check_account_number(account_number: str) -> str:
             "Invalid account number, value must be a 10 character string")
     return account_number
 
+
 def check_email_or_customer(email_or_customer_code: str) -> str:
     try:
         customer = check_email(email_or_customer_code)
@@ -60,10 +62,12 @@ def check_email_or_customer(email_or_customer_code: str) -> str:
                 'Invalid value for email_or_customer_code, provide an email or customer_code') from error
     return customer
 
+
 def check_bank_code(bank_code: str) -> str:
     if not bank_code.isdigit():
         raise ValueError("bank_code should be a string of digits")
     return bank_code
+
 
 def check_domain(domain: str) -> str:
     pattern = re.compile(
@@ -77,7 +81,7 @@ def check_domain(domain: str) -> str:
     return domain
 
 
-def check_query_params(per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None) -> dict | None:
+def check_query_params(per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None) -> dict:
     params = {}
     if per_page:
         params['perPage'] = per_page
@@ -94,7 +98,7 @@ def check_query_params(per_page: int = None, page: int = None, from_date: dateti
     return params
 
 
-def handle_query_params(path: str, params: dict):
+def handle_query_params(path: str, params: dict) -> str:
     path += '?'
     for key, value in params.items():
         path += f"{key}={value}&"
@@ -114,9 +118,16 @@ def check_code(prefix: str, code: Sequence | str) -> str | list:
     if len(code) == 1:
         return code[0]
     return code
-    
-def check_membership(group: Sequence, member: str, name: str):
+
+
+def check_membership(group: Sequence, member: str, name: str) -> str:
     if member not in group:
-        raise ValueError(f"Invalid value for {name}, your choices are: {', '.join(group)}")
+        raise ValueError(
+            f"Invalid value for {name}, your choices are: {', '.join(group)}")
     return member
 
+
+def generate_payload(payload: dict, *unwanted) -> dict:
+    rem = ['self']
+    rem.extend(unwanted)
+    return {key: value for key, value in payload.items() if value is not None and key not in rem}

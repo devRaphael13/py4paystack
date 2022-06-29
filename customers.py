@@ -12,34 +12,26 @@ class Customer(Request):
 
     path = '/customer'
 
-    def __init__(self, secret_key):
-        self.secret_key = secret_key
-
-    def create(self, email: str, first_name: str, last_name: str, phone: int = None, metadata: dict = None):
-        payload = locals()
+    def create(self, email: str, first_name: str, last_name: str, phone: str = None, metadata: dict = None):
+        payload = util.generate_payload(locals())
         payload['email'] = util.check_email(email)
-        if phone:
-            payload['phone'] = f'+{phone}'
-        self.post(self.path, self.secret_key, payload)
+        self.post(self.path, payload)
 
     def list_customers(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
-        path = self.path
         params = util.check_query_params(
             per_page=per_page, page=page, from_date=from_date, to_date=to_date)
         if params:
-            path = util.handle_query_params(path, params)
-        return self.get(path, self.secret_key)
+            return self.get(util.handle_query_params(self.path, params))
+        return self.get(self.path)
 
     def fetch(self, email_or_customer_code: str):
         path = f'{self.path}/{util.check_email_or_customer(email_or_customer_code)}'
-        return self.get(path, self.secret_key)
+        return self.get(path)
 
-    def update(self, customer_code: str, first_name: str = None, last_name: str = None, phone: int = None, metadata: dict = None):
+    def update(self, customer_code: str, first_name: str = None, last_name: str = None, phone: str = None, metadata: dict = None):
         path = f'{self.path}/{util.check_code(settings.CODE_NAMES["customer"], customer_code)}'
-        payload = locals()
-        payload.pop(customer_code)
-        payload['phone'] = f'+{phone}'
-        return self.put(path, self.secret_key, payload=payload)
+        payload = util.generate_payload(locals(), 'path', 'customer_code')
+        return self.put(path, payload=payload)
 
     def validate(self, customer_code: str, first_name: str, last_name: str, identification_type: str, country: str, bvn: str, bank_code: str = None, account_number: str = None, middle_name: str = None):
         path = f'{self.path}/{util.check_code(settings.CODE_NAMES["customer"], customer_code)}/identification'
@@ -60,7 +52,7 @@ class Customer(Request):
         if middle_name is not None:
             payload['middle_name'] = middle_name
 
-        return self.post(path, self.secret_key, payload=payload)
+        return self.post(path, payload=payload)
 
     def whitelist_blacklist(self, email_or_customer_code, risk_action):
         path = f'{self.path}/set_risk_action'
@@ -70,7 +62,7 @@ class Customer(Request):
             'customer': util.check_email_or_customer(email_or_customer_code)
         }
 
-        return self.post(path, self.secret_key, payload=payload)
+        return self.post(path, payload=payload)
 
     def deactivate_authorization(self, authorization_code: str):
         path = f'{self.path}/deactivate_authorization'
@@ -78,4 +70,4 @@ class Customer(Request):
         payload = {'authorization_code': util.check_code(
             settings.CODE_NAMES['authorization'], authorization_code)}
 
-        return self.post(path, self.secret_key, payload=payload)
+        return self.post(path, payload=payload)

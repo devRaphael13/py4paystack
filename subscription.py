@@ -2,6 +2,7 @@ import datetime
 from .request import Request
 from . import util
 from . import settings
+from .errors import MissingArgumentsError, UnwantedArgumentsError
 
 
 class Subscription(Request):
@@ -12,8 +13,6 @@ class Subscription(Request):
 
     path = "/subscription"
 
-    def __init__(self, secret_key: str) -> None:
-        self.secret_key = secret_key
 
     def create(self, email_or_customer_code: str, plan_code: str, authorization_code: str = None, start_date: datetime.datetime | datetime.date | str = None):
         payload = {
@@ -28,24 +27,20 @@ class Subscription(Request):
         if start_date:
             payload['start_date'] = util.handle_date(start_date)
 
-        return self.post(self.path, self.secret_key, payload=payload)
+        return self.post(self.path, payload=payload)
 
     def list_subscriptions(self, per_page: int = None, page: int = None, customer: int = None, plan: int = None):
-        path = self.path
-
-        params = util.check_query_params(per_page=per_page, page=page)
-        params.update({key: value for key, value in locals().items()
-                      if key not in params and value is not None})
+        params = util.generate_payload(locals())
+        params.update(util.check_query_params(per_page=per_page, page=page))
 
         if params:
-            path = util.handle_query_params(path, params)
-
-        return self.get(path, self.secret_key)
+            return self.get(util.handle_query_params(self.path, params))
+        return self.get(self.path)
 
     def fetch(self, subscription_id: int = None, subscription_code: str = None):
         path = self.path
         if not (subscription_id or subscription_code):
-            raise ValueError("Provide subscription id or code")
+            raise MissingArgumentsError("Provide subscription id or code")
 
         if subscription_id:
             path += f"/{subscription_id}"
@@ -53,7 +48,7 @@ class Subscription(Request):
         if subscription_code and not subscription_id:
             path += f"/{util.check_code(settings.CODE_NAMES['subscription'], subscription_code)}"
 
-        return self.get(path, self.secret_key)
+        return self.get(path)
 
     def enable(self, subscription_code: str, email_token: str):
         path = f"{self.path}/enable"
@@ -62,7 +57,7 @@ class Subscription(Request):
             'token': email_token
         }
 
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, payload)
 
     def disable(self, subscription_code: str, email_token: str):
         path = f"{self.path}/disable"
@@ -70,14 +65,14 @@ class Subscription(Request):
             'code': util.check_code(settings.CODE_NAMES['subscription'], subscription_code),
             'token': email_token
         }
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, payload)
 
     def generate_update_link(self, subscription_code: str):
         path = f"{self.path}/{util.check_code(settings.CODE_NAMES['subscription'], subscription_code)}/manage/link"
 
-        return self.get(path, self.secret_key)
+        return self.get(path)
 
     def send_update_link(self, subscription_code: str):
         path = f"{self.path}/{util.check_code(settings.CODE_NAMES['subscription'], subscription_code)}/manage/link"
 
-        return self.get(path, self.secret_key)
+        return self.get(path)

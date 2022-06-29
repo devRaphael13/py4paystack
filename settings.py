@@ -13,7 +13,7 @@ CODE_PREFIXES = {
     'RCP': 'recipient',
     'TRF': 'transfer',
     'BCH': 'bulk_charge_batch'
-    }
+}
 
 CODE_NAMES = {value: key for key, value in CODE_PREFIXES.items()}
 
@@ -49,5 +49,14 @@ TRANSFER_SOURCES = ('balance',)
 
 TRANSFER_CONTROL_REASONS = ('resend_otp', 'transfer')
 
-BULK_CHARGE_STATUSES = ( 'active', 'paused', 'complete' )
+BULK_CHARGE_STATUSES = ('active', 'paused', 'complete')
 
+USSD_CODES = (737, 919, 822, 966)
+
+MOBILE_PAYMENT_PROVIDERS = ("mtn", "vod", "tgo")
+
+DISPUTE_STATUSES = ('awaiting-merchant-feedback', 'awaiting-bank-feedback', 'pending', 'resolved')
+
+DISPUTE_RESOLUTION = ('merchant-accepted', 'declined')
+    
+BANK_GATEWAYS = ('emandate', 'digitalbankmandate')

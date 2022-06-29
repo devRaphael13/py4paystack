@@ -10,20 +10,17 @@ class ApplePay(Request):
 
     path = '/apple-pay/domain'
 
-    def __init__(self, secret_key):
-        self.secret_key = secret_key
-
     def register(self, domain: str):
         payload = {
             'domainName': util.check_domain(domain)
         }
-        return self.post(self.path, self.secret_key, payload=payload)
+        return self.post(self.path, payload=payload)
 
     def list_domains(self):
-        self.get(self.path, self.secret_key)
+        return self.get(self.path)
 
     def unregister(self, domain: str):
         payload = {
             'domainName': util.check_domain(domain)
         }
-        return self.delete(self.path, self.secret_key, payload=payload)
+        return self.delete(self.path, payload=payload)

@@ -1,5 +1,5 @@
 from datetime import date, datetime
-
+from .errors import MissingArgumentsError
 from . import settings, util
 from .request import Request
 
@@ -12,23 +12,21 @@ class TransferRecipient(Request):
 
     path = '/transferrecipient'
 
-    def __init__(self, secret_key: str) -> None:
-        self.secret_key = secret_key
 
     @staticmethod
     def get_payload(payload: dict):
-        payload = {key: value for key, value in payload if value is not None}
+        payload = util.generate_payload(payload)
         if not ('recipient_type' or 'type') in payload:
-            raise ValueError(
-                f"missing arguments: provide recipient_type or type based on the type of recipient you want to create, your choices are: {', '.join(settings.RECIPIENT_TYPES)}")
+            raise MissingArgumentsError(
+                f"provide recipient_type or type based on the type of recipient you want to create, your choices are: {', '.join(settings.RECIPIENT_TYPES)}")
 
         payload['type'] = util.check_membership(settings.RECIPIENT_TYPES, payload.get('recipient_type') or payload.get('type'), 'type')
         r_type = payload.get('type')
 
         if r_type == 'authorization':
             if not ('email' and 'authorization_code') in payload:
-                raise ValueError(
-                    "missing arguments: provide email and authorization_code params")
+                raise MissingArgumentsError(
+                    "provide email and authorization_code params")
 
             payload['email'] = util.check_email(payload.pop('email'))
             payload['authorization_code'] = util.check_code(
@@ -40,8 +38,8 @@ class TransferRecipient(Request):
 
         elif r_type in ('basa', 'nuban', 'mobile_money'):
             if not ('bank_code' and 'account_number') in payload:
-                raise ValueError(
-                    "missing arguments: provide bank_code and account_number")
+                raise MissingArgumentsError(
+                    "provide bank_code and account_number")
 
             payload['bank_code'] = util.check_bank_code(
                 payload.pop('bank_code'))
@@ -59,28 +57,28 @@ class TransferRecipient(Request):
         return payload
 
     def create(self, recipient_type: str, name: str, email: str = None, account_number: str = None, bank_code: str = None, description: str = None, currency: str = None, authorization_code: str = None, metadata: dict = None):
-        return self.post(self.path, self.secret_key, self.get_payload(locals()))
+        return self.post(self.path, self.get_payload(locals()))
 
     def bulk_create(self, *recipients: dict[str]):
         path = f"{self.path}/bulk"
         payload = {
             'batch': [self.get_payload(recipient) for recipient in recipients]
         }
-        return self.post(path, self.secret_key, payload)
+        return self.post(path, payload)
 
     def list_recipients(self, per_page: int = None, page: int = None, from_date: date | datetime | str = None, to_date: date | datetime | str = None):
-        path = self.path
         params = util.check_query_params(
             per_page=per_page, page=page, from_date=from_date, to_date=to_date)
         if params:
-            path = util.handle_query_params(path, params)
-        return self.get(path, self.secret_key)
+            return self.get(util.handle_query_params(self.path, params))
+        return self.get(self.path)
+
 
     def fetch(self, recipient_id: int = None, recipient_code: str = None):
         path = self.path
 
         if not (recipient_id or recipient_code):
-            raise ValueError("provide either recipient_id or recipient_code")
+            raise MissingArgumentsError("provide either recipient_id or recipient_code")
 
         if recipient_id:
             path += f'/{recipient_id}'
@@ -88,13 +86,13 @@ class TransferRecipient(Request):
         if recipient_code and not recipient_id:
             path += f"/{util.check_code(settings.CODE_NAMES['recipient'], recipient_code)}"
 
-        return self.get(path, self.secret_key)
+        return self.get(path)
 
     def update(self, recipient_id: int = None, recipient_code: str = None, name: str = None, email: str = None):
         path = self.path
 
         if not (recipient_id or recipient_code):
-            raise ValueError("provide either recipient_id or recipient_code")
+            raise MissingArgumentsError("provide either recipient_id or recipient_code")
 
         if recipient_id:
             path += f'/{recipient_id}'
@@ -110,13 +108,13 @@ class TransferRecipient(Request):
         if email:
             payload['email'] = util.check_email(email)
 
-        return self.put(path, self.secret_key, payload)
+        return self.put(path, payload)
 
     def delete(self, recipient_id: int = None, recipient_code: str = None):
         path = self.path
 
         if not (recipient_id or recipient_code):
-            raise ValueError("provide either recipient_id or recipient_code")
+            raise MissingArgumentsError("provide either recipient_id or recipient_code")
 
         if recipient_id:
             path += f'/{recipient_id}'
@@ -124,4 +122,4 @@ class TransferRecipient(Request):
         if recipient_code and not recipient_id:
             path += f"/{util.check_code(settings.CODE_NAMES['recipient'], recipient_code)}"
 
-        return super().delete(path, self.secret_key)
+        return super().delete(path)

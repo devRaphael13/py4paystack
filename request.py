@@ -5,14 +5,11 @@ from typing import Sequence
 
 class Request:
 
-    headers = {
-        'authorization': 'bearer {}',
-        'Content-type': 'application/json',
-    }
-
-    def __new__(cls):
-        if cls == Request:
-            return RuntimeError('Do not instantiate me!!')
+    def __init__(self, secret_key: str) -> None:
+        self.headers = {
+            'authorization': f'bearer {secret_key}',
+            'Content-type': 'application/json',
+        }
 
     @classmethod
     def request(cls, path: str, method: str, headers: dict = None, payload: dict = None):
@@ -23,29 +20,17 @@ class Request:
             connection.request(method, path, headers=headers)
         return connection.getresponse().read().decode('utf-8')
 
-    @classmethod
-    def get(cls, path: str, secret_key: str):
-        auth = cls.headers.pop('authorization').format(secret_key)
-        return cls.request(path, 'GET', headers={'authorization': auth})
+    def get(self, path: str):
+        return self.request(path, 'GET', headers={'authorization': self.headers.pop('authorization')})
 
-    @classmethod
-    def change_headers(cls, secret_key: str):
-        headers = cls.headers
-        headers['authorization'].format(secret_key)
-        return headers
+    def post(self, path: str, payload: dict | Sequence):
+        return self.request(path, 'POST', headers=self.headers, payload=json.dumps(payload))
 
-    @classmethod
-    def post(cls, path: str, secret_key: str, payload: dict | Sequence):
-        return cls.request(path, 'POST', headers=cls.change_headers(secret_key), payload=json.dumps(payload))
+    def put(self, path: str, payload: dict):
+        return self.request(path, 'PUT', headers=self.headers, payload=json.dumps(payload))
 
-    @classmethod
-    def put(cls, path: str, secret_key: str, payload: dict):
-        return cls.request(path, 'PUT', headers=cls.change_headers(secret_key), payload=json.dumps(payload))
-
-    @classmethod
-    def delete(cls, path: str, secret_key: str, payload: dict = None):
+    def delete(self, path: str, payload: dict = None):
         method = 'DELETE'
         if payload:
-            return cls.request(path, method, headers=cls.change_headers(secret_key), payload=payload)
-        auth = cls.headers.pop('authorization').format(secret_key)
-        return cls.request(path, method, headers={'authorization': auth})
+            return self.request(path, method, headers=self.headers, payload=payload)
+        return self.request(path, method, headers={'authorization': self.headers.pop('authorization')})
