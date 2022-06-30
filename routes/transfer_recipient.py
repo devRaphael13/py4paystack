@@ -30,7 +30,7 @@ class TransferRecipient(Request):
 
             payload['email'] = util.check_email(payload.pop('email'))
             payload['authorization_code'] = util.check_code(
-                settings.CODE_NAMES['authorization'], payload.pop('authorization_code'))
+                settings.AUTHORIZATION, payload.pop('authorization_code'))
 
             for x in ('bank_code', 'account_number'):
                 if x in payload:
@@ -75,30 +75,12 @@ class TransferRecipient(Request):
 
 
     def fetch(self, recipient_id: int = None, recipient_code: str = None):
-        path = self.path
-
-        if not (recipient_id or recipient_code):
-            raise MissingArgumentsError("provide either recipient_id or recipient_code")
-
-        if recipient_id:
-            path += f'/{recipient_id}'
-
-        if recipient_code and not recipient_id:
-            path += f"/{util.check_code(settings.CODE_NAMES['recipient'], recipient_code)}"
+        path = f'{self.path}/{util.id_or_code(_id=recipient_id, code=recipient_code, data=settings.RECIPIENT)}'
 
         return self.get(path)
 
     def update(self, recipient_id: int = None, recipient_code: str = None, name: str = None, email: str = None):
-        path = self.path
-
-        if not (recipient_id or recipient_code):
-            raise MissingArgumentsError("provide either recipient_id or recipient_code")
-
-        if recipient_id:
-            path += f'/{recipient_id}'
-
-        if recipient_code and not recipient_id:
-            path += f"/{util.check_code(settings.CODE_NAMES['recipient'], recipient_code)}"
+        path = f'{self.path}/{util.id_or_code(_id=recipient_id, code=recipient_code, data=settings.RECIPIENT)}'
 
         payload = {}
 
@@ -111,15 +93,6 @@ class TransferRecipient(Request):
         return self.put(path, payload)
 
     def delete(self, recipient_id: int = None, recipient_code: str = None):
-        path = self.path
-
-        if not (recipient_id or recipient_code):
-            raise MissingArgumentsError("provide either recipient_id or recipient_code")
-
-        if recipient_id:
-            path += f'/{recipient_id}'
-
-        if recipient_code and not recipient_id:
-            path += f"/{util.check_code(settings.CODE_NAMES['recipient'], recipient_code)}"
+        path = f'{self.path}/{util.id_or_code(_id=recipient_id, code=recipient_code, data=settings.RECIPIENT)}'
 
         return super().delete(path)

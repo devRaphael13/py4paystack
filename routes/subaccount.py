@@ -32,29 +32,12 @@ class SubAccounts(Request):
         return self.get(self.path)
 
     def fetch(self, subaccount_id: int = None, subaccount_code: str = None):
-        path = self.path
-        if not (subaccount_id or subaccount_code):
-            raise MissingArgumentsError("Provide a subaccount id or code")
-
-        if subaccount_id:
-            path += f"/{subaccount_id}"
-
-        if subaccount_code and not subaccount_id:
-            path += f"/{util.check_code(settings.CODE_NAMES['subaccount'], subaccount_code)}"
+        path = f'{self.path}/{util.id_or_code(_id=subaccount_id, code=subaccount_code, data=settings.SUBACCOUNT)}'
 
         return self.get(path)
 
     def update(self, subaccount_id: int = None, subaccount_code: str = None, active: bool = None, business_name: str = None, settlement_bank: str = None, account_number: str = None, settlement_schedule: str = None, percentage_charge: float = None, description: str = None, primary_contact_email: str = None, primary_contact_name: str = None, primary_contact_phone: str = None, metadata: str = None):
-        path = self.path
-
-        if not (subaccount_id or subaccount_code):
-            raise MissingArgumentsError("Provide a subaccount id or code")
-
-        if subaccount_id:
-            path += f"/{subaccount_id}"
-
-        if subaccount_code and not subaccount_id:
-            path += f"/{util.check_code(settings.CODE_NAMES['subaccount'], subaccount_code)}"
+        path = f'{self.path}/{util.id_or_code(_id=subaccount_id, code=subaccount_code, data=settings.SUBACCOUNT)}'
 
         payload = util.generate_payload(locals(), 'subaccount_id', 'subaccount_code', 'path')
         

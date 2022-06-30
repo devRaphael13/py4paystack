@@ -1,21 +1,21 @@
+from collections import namedtuple
+Code = namedtuple('Code', ['prefix', 'name'])
+SUBACCOUNT = Code('ACCT', 'subaccount')
+PLAN = Code('PLN', 'plan')
+SUBSCRIPTION = Code('SUB', 'subscription')
+AUTHORIZATION = Code('AUTH', 'authorization')
+SPLIT = Code('SPL', 'split')
+PRODUCT = Code('PROD', 'product')
+INVOICE = Code('PRQ', 'invoice')
+RECIPIENT = Code('RCP', 'recipient')
+TRANSFER = Code('TRF', 'transfer')
+BULK_CHARGE_BATCH = Code('BCH', 'bulk_charge_batch')
+CUSTOMER = Code('CUS', 'customer')
+
 DOCUMENT_TYPES = ('identityNumber', 'passportNumber',
                   'businessRegistrationNumber')
 
-CODE_PREFIXES = {
-    'ACCT': 'subaccount',
-    'PLN': 'plan',
-    'SUB': 'subscription',
-    'CUS': 'customer',
-    'AUTH': 'authorization',
-    'SPL': 'split',
-    'PROD': 'product',
-    'PRQ': 'invoice',
-    'RCP': 'recipient',
-    'TRF': 'transfer',
-    'BCH': 'bulk_charge_batch'
-}
 
-CODE_NAMES = {value: key for key, value in CODE_PREFIXES.items()}
 
 ACCOUNT_TYPES = ('personal', 'business')
 

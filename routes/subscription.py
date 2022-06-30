@@ -17,12 +17,12 @@ class Subscription(Request):
     def create(self, email_or_customer_code: str, plan_code: str, authorization_code: str = None, start_date: datetime.datetime | datetime.date | str = None):
         payload = {
             'customer': util.check_email_or_customer(email_or_customer_code),
-            'plan': util.check_code(settings.CODE_NAMES['plan'], plan_code)
+            'plan': util.check_code(settings.PLAN, plan_code)
         }
 
         if authorization_code:
             payload['authorization'] = util.check_code(
-                settings.CODE_NAMES['authorization'], authorization_code)
+                settings.AUTHORIZATION, authorization_code)
 
         if start_date:
             payload['start_date'] = util.handle_date(start_date)
@@ -38,22 +38,13 @@ class Subscription(Request):
         return self.get(self.path)
 
     def fetch(self, subscription_id: int = None, subscription_code: str = None):
-        path = self.path
-        if not (subscription_id or subscription_code):
-            raise MissingArgumentsError("Provide subscription id or code")
-
-        if subscription_id:
-            path += f"/{subscription_id}"
-
-        if subscription_code and not subscription_id:
-            path += f"/{util.check_code(settings.CODE_NAMES['subscription'], subscription_code)}"
-
+        path = f'{self.path}/{util.id_or_code(_id=subscription_id, code=subscription_code, data=settings.SUBSCRIPTION)}'
         return self.get(path)
 
     def enable(self, subscription_code: str, email_token: str):
         path = f"{self.path}/enable"
         payload = {
-            'code': util.check_code(settings.CODE_NAMES['subscription'], subscription_code),
+            'code': util.check_code(settings.SUBSCRIPTION, subscription_code),
             'token': email_token
         }
 
@@ -62,17 +53,17 @@ class Subscription(Request):
     def disable(self, subscription_code: str, email_token: str):
         path = f"{self.path}/disable"
         payload = {
-            'code': util.check_code(settings.CODE_NAMES['subscription'], subscription_code),
+            'code': util.check_code(settings.SUBSCRIPTION, subscription_code),
             'token': email_token
         }
         return self.post(path, payload)
 
     def generate_update_link(self, subscription_code: str):
-        path = f"{self.path}/{util.check_code(settings.CODE_NAMES['subscription'], subscription_code)}/manage/link"
+        path = f"{self.path}/{util.check_code(settings.SUBSCRIPTION, subscription_code)}/manage/link"
 
         return self.get(path)
 
     def send_update_link(self, subscription_code: str):
-        path = f"{self.path}/{util.check_code(settings.CODE_NAMES['subscription'], subscription_code)}/manage/link"
+        path = f"{self.path}/{util.check_code(settings.SUBSCRIPTION, subscription_code)}/manage/link"
 
         return self.get(path)

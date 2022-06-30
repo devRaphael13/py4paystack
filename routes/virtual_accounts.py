@@ -13,14 +13,14 @@ class DedicatedVirtualAccounts(Request):
 
     def create(self, customer_code: str, preferred_bank: str, subaccount: str = None, split_code: str = None, first_name: str = None, last_name: str = None, phone: str = None):
         payload = util.generate_payload(locals())
-        payload['customer'] = util.check_code(settings.CODE_NAMES['customer'], customer_code)
+        payload['customer'] = util.check_code(settings.CUSTOMER, customer_code)
         payload['preferred_bank'] = util.check_membership(settings.VIRTUAL_ACCOUNT_PROVIDERS, preferred_bank, 'preferred_bank')
 
         if subaccount:
-            payload['subaccount'] = util.check_code(settings.CODE_NAMES['subaccount'], subaccount)
+            payload['subaccount'] = util.check_code(settings.SUBACCOUNT, subaccount)
 
         if split_code:
-            payload['split_code'] = util.check_code(settings.CODE_NAMES['split'], split_code)
+            payload['split_code'] = util.check_code(settings.SPLIT, split_code)
             
         return self.post(self.path, payload=payload)
 
@@ -56,23 +56,17 @@ class DedicatedVirtualAccounts(Request):
         payload = {
             'preferred_bank': util.check_membership(settings.VIRTUAL_ACCOUNT_PROVIDERS, preferred_bank, 'preferred_bank')
         }
-        if not ( customer_code or customer_id ):
-            raise MissingArgumentsError('Provide the customer_code or the customer_id')
 
-        if customer_id:
-            payload['customer'] = customer_id
-
-        if customer_code and not customer_id:
-            payload['customer'] = util.check_code(settings.CODE_NAMES['customer'], customer_code)
+        payload['customer'] = util.id_or_code(_id=customer_id, code=customer_code, data=settings.CUSTOMER)
         
         if not ( subaccount or split_code ):
             raise MissingArgumentsError('Provide subaccount or split_code or a list of subaccounts or split_codes')
         
         if subaccount:
-            payload['subaccount'] = util.check_code(settings.CODE_NAMES['subaccount'], subaccount)
+            payload['subaccount'] = util.check_code(settings.SUBACCOUNT, subaccount)
         
         if split_code:
-            payload['split_code'] = util.check_code(settings.CODE_NAMES['split'] ,split_code)
+            payload['split_code'] = util.check_code(settings.SPLIT,split_code)
         
         return self.post(path, payload=payload)
 

@@ -4,6 +4,7 @@ import uuid
 from typing import Sequence
 
 from . import settings
+from .errors import MissingArgumentsError
 
 
 def check_bvn(bvn: str) -> str:
@@ -106,16 +107,15 @@ def handle_query_params(path: str, params: dict) -> str:
     return path.rstrip('&')
 
 
-def check_code(prefix: str, code: Sequence | str) -> str | list:
-    prefixes = settings.CODE_PREFIXES
+def check_code(data: tuple[str, str], code: Sequence[str] | str) -> str | list:
     if isinstance(code, (str)):
         code = tuple(code)
 
     for x in code:
         pre = x.split('_')[0]
-        if pre != prefix:
+        if pre != data.prefix:
             raise ValueError("Invalid {0}: {0} must start with {1} not {2}".format(
-                prefixes[prefix], prefix, pre))
+                data.name, data.prefix, pre))
     if len(code) == 1:
         return code[0]
     return code
@@ -132,3 +132,12 @@ def generate_payload(payload: dict, *unwanted) -> dict:
     rem = ['self']
     rem.extend(unwanted)
     return {key: value for key, value in payload.items() if value is not None and key not in rem}
+
+
+def id_or_code(_id: int = None, code: str = None, data: tuple = None):
+    if not (_id or code):
+        raise MissingArgumentsError(
+            f'provide either {data.name}_id or {data.name}_code')
+    if _id:
+        return _id
+    return check_code(data, code)

@@ -23,7 +23,7 @@ class TransferControl(Request):
     def resend_otp(self, transfer_code: str, reason: str):
         path = f'{self.transfer}/resend_otp'
         payload = {
-            'transfer_code': util.check_code(settings.CODE_NAMES['transfer'], transfer_code),
+            'transfer_code': util.check_code(settings.TRANSFER, transfer_code),
             'reason': util.check_membership(settings.TRANSFER_CONTROL_REASONS, reason, 'reason')
         }
 

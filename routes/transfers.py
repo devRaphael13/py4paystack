@@ -18,7 +18,7 @@ class Tranfer(Request):
     def get_payload(transfer: dict, generate_reference: bool = False) -> dict:
         payload = util.generate_payload(transfer, 'source', 'generate_reference')
         payload['recipient'] = util.check_code(
-            settings.CODE_NAMES['recipient'], payload['recipient'])
+            settings.RECIPIENT, payload['recipient'])
 
         if 'currency' in payload:
             payload['currency'] = util.check_membership(
@@ -40,7 +40,7 @@ class Tranfer(Request):
     def finalize(self, transfer_code: str, otp: str):
         path = f'{self.path}/finalize_transfer'
         payload = {
-            'transfer_code': util.check_code(settings.CODE_NAMES['transfer'], transfer_code),
+            'transfer_code': util.check_code(settings.TRANSFER, transfer_code),
             'otp': otp
         }
 
@@ -73,16 +73,7 @@ class Tranfer(Request):
 
 
     def fetch(self, transfer_id: int = None, transfer_code: str = None):
-        path = self.path
-
-        if not (transfer_id or transfer_code):
-            raise MissingArgumentsError('provide either transfer_code or transfer_id')
-
-        if transfer_id:
-            path += f'/{transfer_id}'
-
-        if transfer_code and not transfer_id:
-            path += f'/{transfer_code}'
+        path = f'{self.path}/{util.id_or_code(_id=transfer_id, code=transfer_code, data=settings.TRANSFER)}'
 
         return self.get(path)
 

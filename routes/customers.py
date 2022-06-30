@@ -29,12 +29,12 @@ class Customer(Request):
         return self.get(path)
 
     def update(self, customer_code: str, first_name: str = None, last_name: str = None, phone: str = None, metadata: dict = None):
-        path = f'{self.path}/{util.check_code(settings.CODE_NAMES["customer"], customer_code)}'
+        path = f'{self.path}/{util.check_code(settings.CUSTOMER, customer_code)}'
         payload = util.generate_payload(locals(), 'path', 'customer_code')
         return self.put(path, payload=payload)
 
     def validate(self, customer_code: str, first_name: str, last_name: str, identification_type: str, country: str, bvn: str, bank_code: str = None, account_number: str = None, middle_name: str = None):
-        path = f'{self.path}/{util.check_code(settings.CODE_NAMES["customer"], customer_code)}/identification'
+        path = f'{self.path}/{util.check_code(settings.CUSTOMER, customer_code)}/identification'
         payload = {
             'first_name': first_name,
             'last_name': last_name,
@@ -68,6 +68,6 @@ class Customer(Request):
         path = f'{self.path}/deactivate_authorization'
 
         payload = {'authorization_code': util.check_code(
-            settings.CODE_NAMES['authorization'], authorization_code)}
+            settings.AUTHORIZATION, authorization_code)}
 
         return self.post(path, payload=payload)

@@ -18,12 +18,12 @@ class TransactionSplit(Request):
             'type': util.check_membership(settings.SPLIT_TYPES, split_type, 'split_type'),
             'currency': util.check_membership(settings.CURRENCIES, currency, 'currency'),
             'bearer_type': util.check_membership(settings.BEARER_TYPES, bearer_type, 'bearer_type'),
-            'subaccounts': [{'subaccount': util.check_code(settings.CODE_NAMES['subaccount'], subaccount), 'share': share} for subaccount, share in subaccounts],
+            'subaccounts': [{'subaccount': util.check_code(settings.SUBACCOUNT, subaccount), 'share': share} for subaccount, share in subaccounts],
         }
 
         if bearer_type == 'subaccount':
             payload['bearer_subaccount'] = util.check_code(
-                settings.CODE_NAMES['subaccount'], bearer_subaccount)
+                settings.SUBACCOUNT, bearer_subaccount)
 
         return self.post(self.path, payload=payload)
 
@@ -56,7 +56,7 @@ class TransactionSplit(Request):
     def add_update_subaccount(self, split_id: int, subaccount: str, share: int):
         path = f'{self.path}/{split_id}/subaccount/add'
         payload = {
-            'subaccount': util.check_code(settings.CODE_NAMES['subaccount'], subaccount),
+            'subaccount': util.check_code(settings.SUBACCOUNT, subaccount),
             'share': share
         }
         return self.post(path, payload=payload)
@@ -64,6 +64,6 @@ class TransactionSplit(Request):
     def remove_subaccount(self, split_id: int, subaccount: str):
         path = f'{self.path}/{split_id}/subaccount/remove'
         payload = {
-            'subaccount': util.check_code(settings.CODE_NAMES['subaccount'], subaccount)
+            'subaccount': util.check_code(settings.SUBACCOUNT, subaccount)
         }
         return self.post(path, payload=payload)

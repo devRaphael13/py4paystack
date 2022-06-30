@@ -35,21 +35,21 @@ class Transaction(Request):
         if plan:
             payload.pop('amount')
             payload['plan'] = util.check_code(
-                settings.CODE_NAMES['plan'], plan)
+                settings.PLAN, plan)
 
         if channels:
             payload['channels'] = util.check_channels(channels)
 
         if split_code:
             payload['split_code'] = util.check_code(
-                settings.CODE_NAMES['split'], split_code)
+                settings.SPLIT, split_code)
 
         if transaction_charge:
             payload['transaction_charge'] = transaction_charge
 
         if subaccount:
             payload['subaccount'] = util.check_code(
-                settings.CODE_NAMES['subaccount'], subaccount)
+                settings.SUBACCOUNT, subaccount)
             if bearer:
                 payload['bearer'] = util.check_membership(
                     settings.BEARER_TYPES, bearer, 'bearer_type')
@@ -86,7 +86,7 @@ class Transaction(Request):
         payload = {
             'email': util.check_email(email),
             'amount': amount,
-            'authorization_code': util.check_code(settings.CODE_NAMES['authorization'], authorization_code)
+            'authorization_code': util.check_code(settings.AUTHORIZATION, authorization_code)
         }
 
         if currency:
@@ -101,7 +101,7 @@ class Transaction(Request):
         payload = {
             'email': util.check_email(email),
             'amount': amount,
-            'authorization_code': util.check_code(settings.CODE_NAMES['authorization'], authorization_code),
+            'authorization_code': util.check_code(settings.AUTHORIZATION, authorization_code),
         }
 
         if currency:
@@ -122,11 +122,11 @@ class Transaction(Request):
 
         if split_code:
             payload['split_code'] = util.check_code(
-                settings.CODE_NAMES['split'], split_code)
+                settings.SPLIT, split_code)
 
         if subaccount:
             payload['subaccount'] = util.check_code(
-                settings.CODE_NAMES['subaccount'], subaccount)
+                settings.SUBACCOUNT, subaccount)
             if bearer:
                 payload['bearer'] = util.check_membership(
                     settings.BEARER_TYPES, bearer, 'bearer_type')
@@ -142,7 +142,7 @@ class Transaction(Request):
             'email': util.check_email(email),
             'amount': amount,
             'currency': util.check_membership(settings.CURRENCIES, currency, 'currency'),
-            'authorization_code': util.check_code(settings.CODE_NAMES['authorization'], authorization_code),
+            'authorization_code': util.check_code(settings.AUTHORIZATION, authorization_code),
         }
 
         if reference:

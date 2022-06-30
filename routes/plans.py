@@ -1,5 +1,5 @@
 from .utilities import settings, util
-from .utilities.errors import MissingArgumentsError, UnwantedArgumentsError
+from .utilities.errors import MissingArgumentsError
 from .utilities.request import Request
 
 
@@ -30,33 +30,16 @@ class Plan(Request):
             params['status'] = util.check_membership(settings.PLAN_STATUSES, status, 'status')
 
         if params:
-            return self.get(util.handle_query_params(self.path, paramsh)
+            return self.get(util.handle_query_params(self.path, params))
         return self.get(self.path)
 
     def fetch(self, plan_id: int = None, plan_code: str = None):
-        path = self.path
-        if not (plan_id or plan_code):
-            raise MissingArgumentsError("Provide plan id or code")
-
-        if plan_id:
-            path += f'/{plan_id}'
-
-        if plan_code and not plan_id:
-            path += f"/{util.check_code(settings.CODE_NAMES['plan'], plan_code)}"
+        path = f'{self.path}/{util.id_or_code(_id=plan_id, code=plan_code, data=settings.PLAN)}'
 
         return self.get(path)
 
     def update(self, plan_id: int = None, plan_code: str = None, name: str = None, interval: str = None, description: str = None, send_invoices: bool = None, send_sms: bool = None, invoice_limit: int = None):
-        path = self.path
-        if not (plan_id or plan_code):
-            raise MissingArgumentsError("Provide plan id or code")
-
-        if plan_id:
-            path += f"/{plan_id}"
-
-        if plan_code and not plan_id:
-            path += f"/{util.check_code(settings.CODE_NAMES['plan'], plan_code)}"
-
+        path = f'{self.path}/{util.id_or_code(_id=plan_id, code=plan_code, data=settings.PLAN)}'
         payload = util.generate_payload(locals(), 'plan_id', 'plan_code', 'path')
 
         if interval:
