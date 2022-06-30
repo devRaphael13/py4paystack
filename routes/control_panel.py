@@ -1,4 +1,4 @@
-from .request import Request
+from .utilities.request import Request
 
 
 class ControlPanel(Request):

@@ -1,6 +1,7 @@
 from datetime import date, datetime
-from .request import Request
-from . import util
+
+from .utilities import util
+from .utilities.request import Request
 
 
 class PaymentPages(Request):
@@ -10,7 +11,6 @@ class PaymentPages(Request):
     """
 
     path = "/page"
-
 
     def create(self, name: str, description: str, amount: int, slug: str = None, metadata: dict = None, redirect_url: str = None, custom_fields: list = None):
         payload = util.generate_payload(locals())

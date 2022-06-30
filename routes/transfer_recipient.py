@@ -1,7 +1,7 @@
 from datetime import date, datetime
-from .errors import MissingArgumentsError
-from . import settings, util
-from .request import Request
+from .utilities.errors import MissingArgumentsError
+from .utilities import settings, util
+from .utilities.request import Request
 
 
 class TransferRecipient(Request):

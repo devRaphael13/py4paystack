@@ -1,5 +1,5 @@
-from . import settings, util
-from .request import Request
+from .utilities import settings, util
+from .utilities.request import Request
 
 
 class Verification(Request):

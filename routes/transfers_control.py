@@ -1,6 +1,5 @@
-from .request import Request
-from . import util
-from . import settings
+from .utilities import settings, util
+from .utilities.request import Request
 
 
 class TransferControl(Request):

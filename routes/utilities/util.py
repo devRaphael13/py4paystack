@@ -1,8 +1,9 @@
-import uuid
-import re
 import datetime
-from . import settings
+import re
+import uuid
 from typing import Sequence
+
+from . import settings
 
 
 def check_bvn(bvn: str) -> str:

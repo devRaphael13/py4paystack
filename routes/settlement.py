@@ -1,6 +1,7 @@
 from datetime import date, datetime
-from .request import Request
-from . import util
+
+from .utilities import util
+from .utilities.request import Request
 
 
 class Settlements(Request):
@@ -26,4 +27,3 @@ class Settlements(Request):
         if params:
             return self.get(util.handle_query_params(path, params))
         return self.get(path)
-

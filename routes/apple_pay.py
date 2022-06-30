@@ -1,5 +1,5 @@
-from .request import Request
-from . import util
+from .utilities import util
+from .utilities.request import Request
 
 
 class ApplePay(Request):

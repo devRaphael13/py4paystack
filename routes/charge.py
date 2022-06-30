@@ -1,8 +1,8 @@
 from datetime import date, datetime
-from .request import Request
-from . import util
-from . import settings
-from .errors import MissingArgumentsError, UnwantedArgumentsError
+
+from .utilities import settings, util
+from .utilities.errors import MissingArgumentsError, UnwantedArgumentsError
+from .utilities.request import Request
 
 
 class Charge(Request):
@@ -12,7 +12,6 @@ class Charge(Request):
     """
 
     path = '/charge'
-
 
     def create(self, email: str, amount: int, bank_code: str = None, account_number: str = None, currency: str = None, authorization_code: str = None, reference: str = None, pin: str = None, ussd: int = None, phone: str = None, provider: str = None, metadata: dict = None, device_id: str = None, generate_reference: bool = False):
         payload = {

@@ -1,8 +1,8 @@
-import json
 import datetime
-from .request import Request
-from . import settings
-from . import util
+import json
+
+from .utilities import settings, util
+from .utilities.request import Request
 
 
 class Transaction(Request):
@@ -23,8 +23,9 @@ class Transaction(Request):
         }
 
         if currency:
-            payload['currency'] = util.check_membership(settings.CURRENCIES, currency, 'currency')
-        
+            payload['currency'] = util.check_membership(
+                settings.CURRENCIES, currency, 'currency')
+
         if reference:
             payload['reference'] = reference
 
@@ -50,7 +51,8 @@ class Transaction(Request):
             payload['subaccount'] = util.check_code(
                 settings.CODE_NAMES['subaccount'], subaccount)
             if bearer:
-                payload['bearer'] = util.check_membership(settings.BEARER_TYPES, bearer, 'bearer_type')
+                payload['bearer'] = util.check_membership(
+                    settings.BEARER_TYPES, bearer, 'bearer_type')
 
         if metadata:
             payload['metadata'] = json.dumps(metadata)
@@ -67,7 +69,8 @@ class Transaction(Request):
             per_page=per_page, page=page, from_date=from_date, to_date=to_date))
 
         if status:
-            params['status'] = util.check_membership(settings.TRANSACTION_STATUS, status, 'status')
+            params['status'] = util.check_membership(
+                settings.TRANSACTION_STATUS, status, 'status')
 
         if params:
             return self.get(util.handle_query_params(self.path, params))
@@ -87,11 +90,12 @@ class Transaction(Request):
         }
 
         if currency:
-            payload['currency'] = util.check_membership(settings.CURRENCIES, currency, 'currency')
+            payload['currency'] = util.check_membership(
+                settings.CURRENCIES, currency, 'currency')
 
         return self.post(path, payload=payload)
 
-    def charge_authorization(self, email: str, amount: int, authorization_code: str, currency: str = None, reference: str  = None, channels: list | str = None, queue: bool = False, split_code: str = None, subaccount: str = None, transaction_charge: int = None, bearer: str = 'account', generate_reference: bool = False):
+    def charge_authorization(self, email: str, amount: int, authorization_code: str, currency: str = None, reference: str = None, channels: list | str = None, queue: bool = False, split_code: str = None, subaccount: str = None, transaction_charge: int = None, bearer: str = 'account', generate_reference: bool = False):
         path = f'{self.path}/charge_authorization'
 
         payload = {
@@ -101,7 +105,8 @@ class Transaction(Request):
         }
 
         if currency:
-            payload['currency'] = util.check_membership(settings.CURRENCIES, currency, 'currency')
+            payload['currency'] = util.check_membership(
+                settings.CURRENCIES, currency, 'currency')
 
         if reference:
             payload['reference'] = reference
@@ -123,7 +128,8 @@ class Transaction(Request):
             payload['subaccount'] = util.check_code(
                 settings.CODE_NAMES['subaccount'], subaccount)
             if bearer:
-                payload['bearer'] = util.check_membership(settings.BEARER_TYPES, bearer, 'bearer_type')
+                payload['bearer'] = util.check_membership(
+                    settings.BEARER_TYPES, bearer, 'bearer_type')
 
         if transaction_charge:
             payload['transaction_charge'] = transaction_charge
@@ -159,7 +165,6 @@ class Transaction(Request):
             return self.get(util.handle_query_params(path, params))
         return self.get(path)
 
-
     def timeline(self, id_or_reference: int | str = None):
         path = f"{self.path}/timeline/{id_or_reference}" if id_or_reference else '/timeline'
         return self.get(path)
@@ -170,10 +175,12 @@ class Transaction(Request):
             per_page=per_page, page=page, from_date=from_date, to_date=to_date))
 
         if currency:
-            params['currency'] = util.check_membership(settings.CURRENCIES, currency, 'currency')
+            params['currency'] = util.check_membership(
+                settings.CURRENCIES, currency, 'currency')
 
         if status:
-            params['status'] = util.check_membership(settings.TRANSACTION_STATUS, status, 'status')
+            params['status'] = util.check_membership(
+                settings.TRANSACTION_STATUS, status, 'status')
 
         if params:
             return self.get(util.handle_query_params(self.path, params))

@@ -1,7 +1,7 @@
 from datetime import date, datetime
 
-from . import settings, util
-from .request import Request
+from .utilities import settings, util
+from .utilities.request import Request
 
 
 class Disputes(Request):
@@ -10,7 +10,6 @@ class Disputes(Request):
     """
 
     path = '/dispute'
-
 
     def list_disputes(self, page: int = None, per_page: int = None, from_date: date | datetime | str = None, to_date: date | datetime | str = None, transaction_id: int = None, status: str = None):
         params = util.check_query_params(

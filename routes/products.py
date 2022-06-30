@@ -1,7 +1,7 @@
-from .request import Request
-from . import util
 import datetime
-from . import settings
+
+from .utilities import settings, util
+from .utilities.request import Request
 
 
 class Product(Request):

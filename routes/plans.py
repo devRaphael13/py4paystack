@@ -1,7 +1,6 @@
-from . import util
-from .request import Request
-from . import settings
-from .errors import MissingArgumentsError, UnwantedArgumentsError
+from .utilities import settings, util
+from .utilities.errors import MissingArgumentsError, UnwantedArgumentsError
+from .utilities.request import Request
 
 
 class Plan(Request):
