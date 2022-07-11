@@ -1,8 +1,9 @@
-from .utilities import settings, util
+from .utilities import settings, util, decorators
 from .utilities.errors import MissingArgumentsError
 from .utilities.request import Request
 
 
+@decorators.class_type_checker
 class DedicatedVirtualAccounts(Request):
 
     """

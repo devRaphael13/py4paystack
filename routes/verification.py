@@ -1,7 +1,8 @@
-from .utilities import settings, util
+from .utilities import settings, util, decorators
 from .utilities.request import Request
 
 
+@decorators.class_type_checker
 class Verification(Request):
 
     """

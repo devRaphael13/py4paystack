@@ -1,7 +1,8 @@
-from .utilities import util
+from .utilities import util, decorators
 from .utilities.request import Request
 
 
+@decorators.class_type_checker
 class ApplePay(Request):
 
     """

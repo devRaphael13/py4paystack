@@ -1,8 +1,10 @@
 from . import routes
+from .routes.utilities import decorators
 
 
 class Paystack:
 
+    @decorators.func_type_checker
     def __init__(self, secret_key: str) -> None:
         self.secret_key = secret_key
 

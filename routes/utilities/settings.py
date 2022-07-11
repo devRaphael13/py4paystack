@@ -1,4 +1,5 @@
 from collections import namedtuple
+
 Code = namedtuple('Code', ['prefix', 'name'])
 SUBACCOUNT = Code('ACCT', 'subaccount')
 PLAN = Code('PLN', 'plan')
@@ -14,8 +15,6 @@ CUSTOMER = Code('CUS', 'customer')
 
 DOCUMENT_TYPES = ('identityNumber', 'passportNumber',
                   'businessRegistrationNumber')
-
-
 
 ACCOUNT_TYPES = ('personal', 'business')
 
@@ -55,8 +54,9 @@ USSD_CODES = (737, 919, 822, 966)
 
 MOBILE_PAYMENT_PROVIDERS = ("mtn", "vod", "tgo")
 
-DISPUTE_STATUSES = ('awaiting-merchant-feedback', 'awaiting-bank-feedback', 'pending', 'resolved')
+DISPUTE_STATUSES = ('awaiting-merchant-feedback',
+                    'awaiting-bank-feedback', 'pending', 'resolved')
 
 DISPUTE_RESOLUTION = ('merchant-accepted', 'declined')
-    
+
 BANK_GATEWAYS = ('emandate', 'digitalbankmandate')

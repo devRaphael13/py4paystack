@@ -1,10 +1,11 @@
 import datetime
 import json
 
-from .utilities import settings, util
+from .utilities import settings, util, decorators
 from .utilities.request import Request
 
 
+@decorators.class_type_checker
 class Transaction(Request):
 
     """
@@ -14,7 +15,7 @@ class Transaction(Request):
     path = '/transaction'
 
     def initialize(self, email: str, amount: int, redirect_url: str, reference: str = None, currency: str = None, plan: str = None, channels: str | list = None, split_code: str = None, transaction_charge: int = None, subaccount: str = None, bearer: str = 'account', metadata: dict = None, generate_reference: bool = False):
- 
+
         path = f'{self.path}/initialize'
 
         payload = {

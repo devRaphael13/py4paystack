@@ -1,10 +1,11 @@
 import datetime
 from typing import Iterable
 
-from .utilities import settings, util
+from .utilities import settings, util, decorators
 from .utilities.request import Request
 
 
+@decorators.class_type_checker
 class TransactionSplit(Request):
     """
     Create, list, retrieve, update split transaction configuration with one or more SubAccounts (You should have subaccounts on your integration to use this)  

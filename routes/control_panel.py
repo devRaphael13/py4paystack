@@ -1,6 +1,8 @@
 from .utilities.request import Request
+from .utilities import decorators
 
 
+@decorators.class_type_checker
 class ControlPanel(Request):
 
     """

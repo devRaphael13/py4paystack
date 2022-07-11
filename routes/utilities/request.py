@@ -1,8 +1,10 @@
 import http.client
 import json
 from typing import Sequence
+from . import decorators
 
 
+@decorators.class_type_checker
 class Request:
 
     def __init__(self, secret_key: str) -> None:
@@ -23,7 +25,7 @@ class Request:
     def get(self, path: str):
         return self.request(path, 'GET', headers={'authorization': self.headers.pop('authorization')})
 
-    def post(self, path: str, payload: dict | Sequence):
+    def post(self, path: str, payload: dict | Sequence | set):
         return self.request(path, 'POST', headers=self.headers, payload=json.dumps(payload))
 
     def put(self, path: str, payload: dict):

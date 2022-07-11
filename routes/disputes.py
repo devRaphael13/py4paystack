@@ -1,9 +1,10 @@
 from datetime import date, datetime
 
-from .utilities import settings, util
+from .utilities import settings, util, decorators
 from .utilities.request import Request
 
 
+@decorators.class_type_checker
 class Disputes(Request):
 
     """The Disputes API allows you manage transaction disputes on your integration
