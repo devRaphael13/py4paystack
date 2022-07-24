@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "py4paystack"
+version = "0.0.1"
+authors = [
+    { name="Raphael Ezeigwe", email="iraphael1308@gmail.com" },
+]
+description = "A paystack API wrapper in python with type checking functionality"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating system :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/raphaelice/pypaystack"
+"Bug Tracker" = "https://github.com/raphaelice/pypaystack/issues"
