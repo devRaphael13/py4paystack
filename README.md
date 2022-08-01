@@ -1,3 +1,6 @@
+## Py4paystack
+A paystack API wrapper with type checking written in python
+
 ## Contents
 - [Installation](#installation)
 - [Accept payments](#accept-payments)
