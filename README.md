@@ -17,20 +17,14 @@ Run `pip install py4paystack` on the commandline to install
 
 To accept payments, you can import the Transaction class from the routes module if that'll be all you need, alternatively you can import the Paystack class like if you need more functionality.
 
-`
+```{python}
 from py4paystack.routes import Transaction # or from py4paystack import Paystack
-`
-<br>
-<br>
 
-`
 trans = Transaction('ExampleSecretKey') # or
 trans = Paystack('ExampleSecretKey).transaction()
-`
 
-`
 trans.initialize('testemail@gmail.com', 120934)
-`
+```
 
 Where 'testemail@gmail.com' is the users email and 120934 is the amount in the smallest denomination of the currency i.e in Naira it would be N1,209.34k
 
