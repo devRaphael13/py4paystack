@@ -6,7 +6,7 @@ from ..utilities.request import Request
 
 
 @decorators.class_type_checker
-class Tranfer(Request):
+class Transfer(Request):
 
     """
     The Transfers API allows you automate sending money on your integration 
