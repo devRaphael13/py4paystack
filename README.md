@@ -23,10 +23,10 @@ from py4paystack.routes import Transaction # or from py4paystack import Paystack
 trans = Transaction('ExampleSecretKey') # or
 trans = Paystack('ExampleSecretKey).transaction()
 
-trans.initialize('testemail@gmail.com', 120934)
+res = trans.initialize('testemail@test.com', 120934)
 ```
 
-Where 'testemail@gmail.com' is the users email and 120934 is the amount in the smallest denomination of the currency i.e in Naira it would be N1,209.34k
+Where 'testemail@test.com' is the users email and 120934 is the amount in the smallest denomination of the currency i.e in Naira the user would be paying N1,209.34k
 
 This returns data in JSON format e.g something that looks like this
 
