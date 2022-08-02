@@ -43,6 +43,8 @@ This returns data in JSON format e.g something that looks like this
       }
     }
 
+Redirect the user to "authorization_url" to accept the payment.
+
 <br>
 
 ## Advanced Usage
