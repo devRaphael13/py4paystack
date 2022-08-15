@@ -15,7 +15,7 @@ class Request:
 
     @classmethod
     def request(cls, path: str, method: str, headers: dict = None, payload: dict = None):
-        connection = http.client.HTTPSConnection('https://api.paystack.co')
+        connection = http.client.HTTPSConnection('api.paystack.co')
         if payload is not None:
             connection.request(method, path, headers=headers, body=payload)
         else:
