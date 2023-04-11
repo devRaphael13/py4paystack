@@ -1,5 +1,6 @@
 from datetime import date, datetime
 
+from typing import Union
 from ..utilities import settings, util, decorators
 from ..utilities.request import Request
 
@@ -12,11 +13,11 @@ class Refund(Request):
 
     path = '/refund'
 
-    def create(self, transaction: str | int, amount: int = None, currency: str = None, customer_note: str = None, merchant_note: str = None):
+    def create(self, transaction: Union[str, int], amount: int = None, currency: str = None, customer_note: str = None, merchant_note: str = None):
         """Initiate a refund on your integration
 
         Args:
-            transaction (str | int): Transaction reference or id
+            transaction (Union[str, int]): Transaction reference or id
             amount (int, optional): Amount ( in kobo if currency is NGN, pesewas, if currency is GHS, and cents, if currency is ZAR ) to be refunded to the customer. Amount is optional(defaults to original transaction amount) and cannot be more than the original transaction amount.. Defaults to None.
             currency (str, optional): Three-letter ISO currency. Allowed values are: NGN, GHS, ZAR or USD. Defaults to None.
             customer_note (str, optional): Customer reason. Defaults to None.
@@ -34,7 +35,7 @@ class Refund(Request):
 
         return self.post(self.path, payload)
 
-    def list_refunds(self, reference: str = None, currency: str = None, per_page: int = None, page: int = None, from_date: date | datetime | str = None, to_date:  date | datetime | str = None):
+    def list_refunds(self, reference: str = None, currency: str = None, per_page: int = None, page: int = None, from_date: Union[date, datetime, str] = None, to_date:  Union[date, datetime, str] = None):
         """List refunds available on your integration.
 
         Args:
@@ -45,9 +46,9 @@ class Refund(Request):
                 If not specify we use a default value of 50.. Defaults to None.
             page (int, optional): Specify exactly what refund you want to page.
                 If not specify we use a default value of 1.. Defaults to None.
-            from_date (date | datetime | str, optional): A timestamp from which to start listing refund
+            from_date (Union[date, datetime, str], optional): A timestamp from which to start listing refund
                 e.g. 2016-09-21. Defaults to None.
-            to_date (date | datetime | str, optional): A timestamp at which to stop listing refund
+            to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing refund
                 e.g. 2016-09-21. Defaults to None.
 
         Returns:

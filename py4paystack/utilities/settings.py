@@ -1,4 +1,7 @@
+import os
 from collections import namedtuple
+from dotenv import load_dotenv
+
 
 Code = namedtuple('Code', ['prefix', 'name'])
 SUBACCOUNT = Code('ACCT', 'subaccount')
@@ -60,3 +63,7 @@ DISPUTE_STATUSES = ('awaiting-merchant-feedback',
 DISPUTE_RESOLUTION = ('merchant-accepted', 'declined')
 
 BANK_GATEWAYS = ('emandate', 'digitalbankmandate')
+
+load_dotenv()
+type_check = os.getenv("TYPE_CHECK") 
+TYPE_CHECK = type_check if type_check is not None else True

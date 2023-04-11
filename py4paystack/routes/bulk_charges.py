@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Sequence
+from typing import Sequence, Union
 
 from ..utilities import settings, util, decorators
 from ..utilities.request import Request
@@ -31,7 +31,7 @@ class BulkCharges(Request):
 
         return self.post(self.path, payload)
 
-    def list_batches(self, per_page: int = None, page: int = None, from_date: date | datetime | str = None, to_date: date | datetime | str = None):
+    def list_batches(self, per_page: int = None, page: int = None, from_date: Union[date, datetime, str] = None, to_date: Union[date, datetime, str] = None):
         """This lists all bulk charge batches created by the integration. Statuses can be active, paused, or complete.
 
         Args:
@@ -39,9 +39,9 @@ class BulkCharges(Request):
 
             page (Optional[ int ]): Specify exactly what transfer you want to page. If not specify we use a default value of 1.
 
-            from_date (Optional[ date | datetime | str ]): A timestamp from which to start listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
+            from_date (Optional[ Union[date, datetime, str] ]): A timestamp from which to start listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
 
-            to_date (Optional[ date | datetime | str ]): A timestamp at which to stop listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
+            to_date (Optional[ Union[date, datetime, str] ]): A timestamp at which to stop listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
 
 
         Returns:
@@ -54,12 +54,12 @@ class BulkCharges(Request):
             return self.get(util.handle_query_params(self.path, params))
         return self.get(self.path)
 
-    def fetch_batches(self, id_or_code: int | str):
+    def fetch_batches(self, id_or_code: Union[int, str]):
         """This endpoint retrieves a specific batch code.
         It also returns useful information on its progress by way of the total_charges and pending_charges attributes.
     
         Args:
-            id_or_code (int | str): An ID or code for the charge whose batches you want to retrieve.
+            id_or_code (Union[int, str]): An ID or code for the charge whose batches you want to retrieve.
 
 
         Returns:
@@ -70,13 +70,13 @@ class BulkCharges(Request):
 
         return self.get(path)
 
-    def fetch_charges_in_batch(self, id_or_code: int | str, status: str = None, per_page: int = None, page: int = None, from_date: date | datetime | str = None, to_date: date | datetime | str = None):
+    def fetch_charges_in_batch(self, id_or_code: Union[int, str], status: str = None, per_page: int = None, page: int = None, from_date: Union[date, datetime, str] = None, to_date: Union[date, datetime, str] = None):
         """This endpoint retrieves the charges associated with a specified batch code.
         Pagination parameters are available.
         You can also filter by status. Charge statuses can be pending, success or failed.
 
         Args:
-            id_or_code (int | str): An ID or code for the batch whose charges you want to retrieve.
+            id_or_code (Union[int, str]): An ID or code for the batch whose charges you want to retrieve.
 
             status ( str ): Either one of these values: 'pending', 'success' or 'failed'
 
@@ -84,9 +84,9 @@ class BulkCharges(Request):
 
             page (Optional[ int ]): Specify exactly what transfer you want to page. If not specify we use a default value of 1.
 
-            from_date (Optional[ date | datetime | str ]): A timestamp from which to start listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
+            from_date (Optional[ Union[date, datetime, str] ]): A timestamp from which to start listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
 
-            to_date (Optional[ date | datetime | str ]): A timestamp at which to stop listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
+            to_date (Optional[ Union[date, datetime, str] ]): A timestamp at which to stop listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
 
         Returns:
             json: Data fetched from paystack API

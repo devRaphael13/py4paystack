@@ -1,5 +1,6 @@
 import datetime
 
+from typing import Union
 from ..utilities import settings, util, decorators
 from ..utilities.request import Request
 
@@ -47,7 +48,7 @@ class SubAccounts(Request):
                 primary_contact_email)
         return self.post(self.path, payload=payload)
 
-    def list_subaccounts(self, per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None):
+    def list_subaccounts(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None):
         """List subaccounts available on your integration.
 
         Args:
@@ -55,9 +56,9 @@ class SubAccounts(Request):
                 If not specify we use a default value of 50.
             page (int, optional): Specify exactly what page you want to retrieve.
                 If not specify we use a default value of 1.
-            from_date (datetime.date | datetime.datetime | str, optional): A timestamp from which to start listing subaccounts
+            from_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp from which to start listing subaccounts
                 e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
-            to_date (datetime.date | datetime.datetime | str, optional): A timestamp at which to stop listing subaccounts
+            to_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp at which to stop listing subaccounts
                 e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
         Returns:
@@ -69,11 +70,11 @@ class SubAccounts(Request):
             return self.get(util.handle_query_params(self.path, params))
         return self.get(self.path)
 
-    def fetch(self, subaccount: int | str):
+    def fetch(self, subaccount: Union[int, str]):
         """Get details of a subaccount on your integration. 
 
         Args:
-            subaccount (int | str): The subaccount ID or code you want to fetch.
+            subaccount (Union[int, str]): The subaccount ID or code you want to fetch.
 
         Returns:
             JSON: Data fetched from API
@@ -83,11 +84,11 @@ class SubAccounts(Request):
 
         return self.get(path)
 
-    def update(self, subaccount: int | str, active: bool = None, business_name: str = None, settlement_bank: str = None, account_number: str = None, settlement_schedule: str = None, percentage_charge: float = None, description: str = None, primary_contact_email: str = None, primary_contact_name: str = None, primary_contact_phone: str = None, metadata: str = None):
+    def update(self, subaccount: Union[int, str], active: bool = None, business_name: str = None, settlement_bank: str = None, account_number: str = None, settlement_schedule: str = None, percentage_charge: float = None, description: str = None, primary_contact_email: str = None, primary_contact_name: str = None, primary_contact_phone: str = None, metadata: str = None):
         """Update a subaccount details on your integration.
 
         Args:
-            subaccount (int | str): Subaccount's ID or code.
+            subaccount (Union[int, str]): Subaccount's ID or code.
             active (bool, optional): Activate or deactivate a subaccount.
                 Set value to true to activate subaccount or false to deactivate the subaccount.
             business_name (str, optional): Name of business for subaccount. Defaults to None.

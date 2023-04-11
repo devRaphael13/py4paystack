@@ -1,5 +1,5 @@
 from datetime import date, datetime
-
+from typing import Union
 from ..utilities import settings, util, decorators
 from ..utilities.errors import MissingArgumentsError, UnwantedArgumentsError
 from ..utilities.request import Request
@@ -168,11 +168,11 @@ class Charge(Request):
         payload = util.generate_payload(locals())
         return self.post(path, payload)
 
-    def submit_birthday(self, birthday: date | datetime | str, reference: str):
+    def submit_birthday(self, birthday: Union[date, datetime, str], reference: str):
         """Submit Phone when requested
 
         Args:
-            birthday ( date | datetime | str ): birthday submitted by the user
+            birthday ( Union[date, datetime, str] ): birthday submitted by the user
             reference (str): Reference of the ongoing transaction
 
         Returns:

@@ -1,5 +1,6 @@
 from datetime import date, datetime
 
+from typing import Union
 from ..utilities import settings, util, decorators
 from ..utilities.request import Request
 
@@ -13,7 +14,7 @@ class Disputes(Request):
 
     path = '/dispute'
 
-    def list_disputes(self, page: int = None, per_page: int = None, from_date: date | datetime | str = None, to_date: date | datetime | str = None, transaction_id: int = None, status: str = None):
+    def list_disputes(self, page: int = None, per_page: int = None, from_date: Union[date, datetime, str] = None, to_date: Union[date, datetime, str] = None, transaction_id: int = None, status: str = None):
         """List all the dispute filed against you.
 
         Args:
@@ -21,9 +22,9 @@ class Disputes(Request):
                 Defaults to None.
             per_page (int, optional): Specify how many records you want to retrieve per page. If not specify we use a default value of 50.
                 Defaults to None.
-            from_date (date | datetime | str, optional): A timestamp from which to start listing dispute e.g. 2016-09-21.
+            from_date (Union[date, datetime, str], optional): A timestamp from which to start listing dispute e.g. 2016-09-21.
                 Defaults to None.
-            to_date (date | datetime | str, optional): A timestamp at which to stop listing dispute e.g. 2016-09-21.
+            to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing dispute e.g. 2016-09-21.
                 Defaults to None.
             transaction_id (int, optional): Transaction Id. Defaults to None.
             status (str, optional): Dispute Status. Acceptable values: { awaiting-merchant-feedback | awaiting-bank-feedback | pending | resolved }.
@@ -92,7 +93,7 @@ class Disputes(Request):
         payload = util.generate_payload(locals(), 'dispute_id')
         return self.put(path, payload)
 
-    def add_evidence(self, dispute_id: int, customer_email: str, customer_name: str, customer_phone: str, service_details: str, delivery_address: str = None, delivery_date: date | datetime | str = None):
+    def add_evidence(self, dispute_id: int, customer_email: str, customer_name: str, customer_phone: str, service_details: str, delivery_address: str = None, delivery_date: Union[date, datetime, str] = None):
         """Provide evidence for the dispute.
 
         Args:
@@ -102,7 +103,7 @@ class Disputes(Request):
             customer_phone (str):Customer's phone number
             service_details (str): Details of the service involved
             delivery_address (str, optional): Delivery Address. Defaults to None.
-            delivery_date (date | datetime | str, optional): ISO 8601 representation of delivery date (YYYY-MM-DD). 
+            delivery_date (Union[date, datetime, str], optional): ISO 8601 representation of delivery date (YYYY-MM-DD). 
                 Defaults to None.
 
         Returns:
@@ -159,7 +160,7 @@ class Disputes(Request):
             payload['evidence'] = payload.pop('evidence_id')
         return self.put(path, payload)
 
-    def export(self, per_page: int = None, page: int = None, from_date: date | datetime | str = None, to_date:  date | datetime | str = None, transaction_id: int = None, status: str = None):
+    def export(self, per_page: int = None, page: int = None, from_date: Union[date, datetime, str] = None, to_date:  Union[date, datetime, str] = None, transaction_id: int = None, status: str = None):
         """Export disputes available on your integration\
 
         Args:
@@ -167,9 +168,9 @@ class Disputes(Request):
                 If not specify we use a default value of 50.. Defaults to None.
             page (int, optional): Specify exactly what dispute you want to page.
                 If not specify we use a default value of 1.. Defaults to None.
-            from_date (date | datetime | str, optional): A timestamp from which to start listing dispute
+            from_date (Union[date, datetime, str], optional): A timestamp from which to start listing dispute
                 e.g. 2016-09-21. Defaults to None.
-            to_date (date | datetime | str, optional): A timestamp at which to stop listing dispute
+            to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing dispute
                 e.g. 2016-09-21. Defaults to None.
             transaction_id (int, optional): Transaction ID. Defaults to None.
             status (str, optional): Dispute Status. Acceptable values: { awaiting-merchant-feedback | awaiting-bank-feedback | pending | resolved }. Defaults to None.

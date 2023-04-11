@@ -1,3 +1,4 @@
+from typing import Union
 from ..utilities import settings, util, decorators
 from ..utilities.request import Request
 
@@ -71,11 +72,11 @@ class Plan(Request):
             return self.get(util.handle_query_params(self.path, params))
         return self.get(self.path)
 
-    def fetch(self, plan: int | str):
+    def fetch(self, plan: Union[int, str]):
         """Get details of a plan on your integration.
 
         Args:
-            plan (int | str): The plan ID or code you want to fetch.
+            plan (Union[int, str]): The plan ID or code you want to fetch.
 
         Returns:
             JSON: Data fetched from API
@@ -85,11 +86,11 @@ class Plan(Request):
 
         return self.get(path)
 
-    def update(self, plan: int | str, name: str = None, amount: int = None, interval: str = None, description: str = None, currency: str = None, send_invoices: bool = None, send_sms: bool = None, invoice_limit: int = None):
+    def update(self, plan: Union[int, str], name: str = None, amount: int = None, interval: str = None, description: str = None, currency: str = None, send_invoices: bool = None, send_sms: bool = None, invoice_limit: int = None):
         """Update a plan details on your integration.
 
         Args:
-            plan (int | str): Code or ID of the plan to update.
+            plan (Union[int, str]): Code or ID of the plan to update.
             name (str, optional): Name of plan. Defaults to None.
             amount (int, optional): Amount should be in kobo if currency is NGN and pesewas for GHS. Defaults to None.
             interval (str, optional): Interval in words. Valid intervals are hourly, daily, weekly, monthly,biannually, annually. Defaults to None.

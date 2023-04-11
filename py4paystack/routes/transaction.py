@@ -1,6 +1,7 @@
 import datetime
 import json
 
+from typing import Union
 from ..utilities import settings, util, decorators
 from ..utilities.request import Request
 
@@ -15,7 +16,7 @@ class Transaction(Request):
 
     path = '/transaction'
 
-    def initialize(self, email: str, amount: int, callback_url: str, reference: str = None, currency: str = None, plan: str = None, invoice_limit: int = None, channels: str | list = None, split_code: str = None, transaction_charge: int = None, subaccount: str = None, bearer: str = 'account', metadata: dict = None, generate_reference: bool = False):
+    def initialize(self, email: str, amount: int, callback_url: str, reference: str = None, currency: str = None, plan: str = None, invoice_limit: int = None, channels: Union[str, list] = None, split_code: str = None, transaction_charge: int = None, subaccount: str = None, bearer: str = 'account', metadata: dict = None, generate_reference: bool = False):
         """Initialize a transaction from your backend
 
         Args:
@@ -31,7 +32,7 @@ class Transaction(Request):
             plan (str, optional): If transaction is to create a subscription to a predefined plan, provide plan code here.
                 This would invalidate the value provided in amount. Defaults to None.
             invoice_limit (int, optional): Number of times to charge customer during subscription to plan. Defaults to None.
-            channels (str | list, optional): An array of payment channels ( or a string of one channel ) to control what channels you want to make available to the user to make a payment with.
+            channels (Union[str, list], optional): An array of payment channels ( or a string of one channel ) to control what channels you want to make available to the user to make a payment with.
                 Available channels include: ['card', 'bank', 'ussd', 'qr', 'mobile_money', 'bank_transfer']. Defaults to None.
             split_code (str, optional): The split code of the transaction split. e.g. SPL_98WF13Eb3w. Defaults to None.
             transaction_charge (int, optional): An amount used to override the split configuration for a single split payment.
@@ -109,7 +110,7 @@ class Transaction(Request):
         path = f'{self.path}/verify/{reference}'
         return self.get(path)
 
-    def list_transactions(self, per_page: int = None, page: int = None, customer: int = None, status: str = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None, amount: int = None):
+    def list_transactions(self, per_page: int = None, page: int = None, customer: int = None, status: str = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None, amount: int = None):
         """List transactions carried out on your integration.
 
         Args:
@@ -119,9 +120,9 @@ class Transaction(Request):
                 If not specify we use a default value of 1.
             customer (int, optional): Specify an ID for the customer whose transactions you want to retrieve. Defaults to None.
             status (str, optional): Filter transactions by status ('failed', 'success', 'abandoned'). Defaults to None.
-            from_date (datetime.datetime | datetime.date | str, optional): A timestamp from which to start listing transaction
+            from_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp from which to start listing transaction
                 e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
-            to_date (datetime.datetime | datetime.date | str, optional): A timestamp at which to stop listing transaction
+            to_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp at which to stop listing transaction
                 e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
             amount (int, optional): Filter transactions by amount. Specify the amount 
                 (in kobo if currency is NGN, pesewas, if currency is GHS, and cents, if currency is ZAR). Defaults to None.
@@ -196,7 +197,7 @@ class Transaction(Request):
 
         return self.post(path, payload=payload)
 
-    def charge_authorization(self, email: str, amount: int, authorization_code: str, currency: str = None, reference: str = None, channels: list | str = None, queue: bool = False, split_code: str = None, subaccount: str = None, transaction_charge: int = None, bearer: str = None, metadata: dict = None, generate_reference: bool = False):
+    def charge_authorization(self, email: str, amount: int, authorization_code: str, currency: str = None, reference: str = None, channels: Union[list, str] = None, queue: bool = False, split_code: str = None, subaccount: str = None, transaction_charge: int = None, bearer: str = None, metadata: dict = None, generate_reference: bool = False):
         """All authorizations marked as reusable can be charged with this endpoint whenever you need to receive payments.
 
         Args:
@@ -208,7 +209,7 @@ class Transaction(Request):
                 Allowed values are: NGN, GHS, ZAR or USD. Defaults to None.
             reference (str, optional): Unique transaction reference.
                 Only -, ., = and alphanumeric characters allowed.. Defaults to None.
-            channels (list | str, optional): Send us 'card' or 'bank' or 'card','bank' as an array
+            channels (Union[list, str], optional): Send us 'card' or 'bank' or 'card','bank' as an array
                 ( or just a string if you plan to use one payment option )
                 to specify what options to show the user paying. Defaults to None.
             queue (bool, optional): If you are making a scheduled charge call,
@@ -310,7 +311,7 @@ class Transaction(Request):
 
         return self.post(path, payload=payload)
 
-    def totals(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
+    def totals(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None):
         """Total amount received on your account
 
         Args:
@@ -318,9 +319,9 @@ class Transaction(Request):
                 If not specify we use a default value of 50.
             page (int, optional): Specify exactly what page you want to retrieve.
                 If not specify we use a default value of 1.
-            from_date (datetime.datetime | datetime.date | str, optional): A timestamp from which to start listing transaction
+            from_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp from which to start listing transaction
                 e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
-            to_date (datetime.datetime | datetime.date | str, optional): A timestamp at which to stop listing transaction
+            to_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp at which to stop listing transaction
                 e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
         Returns:
@@ -334,11 +335,11 @@ class Transaction(Request):
             return self.get(util.handle_query_params(path, params))
         return self.get(path)
 
-    def timeline(self, id_or_reference: int | str = None):
+    def timeline(self, id_or_reference: Union[int, str] = None):
         """View the timeline of a transaction.
 
         Args:
-            id_or_reference (int | str, optional): The ID or the reference of the transaction. Defaults to None.
+            id_or_reference (Union[int, str], optional): The ID or the reference of the transaction. Defaults to None.
 
         Returns:
             JSON: Data fetched from API
@@ -347,7 +348,7 @@ class Transaction(Request):
         path = f"{self.path}/timeline/{id_or_reference}" if id_or_reference else '/timeline'
         return self.get(path)
 
-    def export(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None, customer: int = None, status: str = None, currency: str = None, amount: int = None, settled: bool = None, settlement: int = None, payment_page: int = None):
+    def export(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None, customer: int = None, status: str = None, currency: str = None, amount: int = None, settled: bool = None, settlement: int = None, payment_page: int = None):
         """List transactions carried out on your integration.
 
         Args:
@@ -355,9 +356,9 @@ class Transaction(Request):
                 If not specify we use a default value of 50.
             page (int, optional): Specify exactly what page you want to retrieve.
                 If not specify we use a default value of 1.
-            from_date (datetime.datetime | datetime.date | str, optional): A timestamp from which to start listing transaction
+            from_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp from which to start listing transaction
                 e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
-            to_date (datetime.datetime | datetime.date | str, optional): A timestamp at which to stop listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+            to_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp at which to stop listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
             customer (int, optional): Specify an ID for the customer whose transactions you want to retrieve. Defaults to None.
             status (str, optional): Filter transactions by status ('failed', 'success', 'abandoned'). Defaults to None.
             currency (str, optional): Specify the transaction currency to export.

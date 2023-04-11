@@ -1,11 +1,10 @@
 import datetime
 import re
 import uuid
-from typing import Sequence
+from typing import Sequence, Union
 
 from . import settings
 from .errors import MissingArgumentsError
-
 
 def check_bvn(bvn: str) -> str:
     if not bvn.isdigit() or len(bvn) != 11:
@@ -29,7 +28,7 @@ def check_channels(channel) -> list:
     return [channel]
 
 
-def handle_date(date: datetime.date | datetime.datetime | str) -> str:
+def handle_date(date: Union[datetime.datetime, datetime.date, str]) -> str:
     return date.strftime('%Y-%m-%d') if isinstance(date, (datetime.date, datetime.datetime)) else datetime.datetime.strptime(date, '%Y-%m-%d').strftime('%Y-%m-%d')
 
 
@@ -83,7 +82,7 @@ def check_domain(domain: str) -> str:
     return domain
 
 
-def check_query_params(per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None) -> dict:
+def check_query_params(per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None) -> dict:
     params = {}
     if per_page:
         params['perPage'] = per_page
@@ -107,7 +106,7 @@ def handle_query_params(path: str, params: dict) -> str:
     return path.rstrip('&')
 
 
-def check_code(data: tuple[str, str], code: Sequence[str] | str) -> str | list:
+def check_code(data: tuple[str, str], code: Union[Sequence[str], str]) -> Union[str, list]:
     if isinstance(code, (str)):
         code = tuple(code)
 
@@ -134,7 +133,7 @@ def generate_payload(payload: dict, *unwanted) -> dict:
     return {key: value for key, value in payload.items() if value is not None and key not in rem}
 
 
-def id_or_code(value: str | int, data: tuple = None):
+def id_or_code(value: Union[str, int], data: tuple = None):
     if isinstance(value, int):
         return value
     return check_code(data, value)

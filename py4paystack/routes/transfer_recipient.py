@@ -1,5 +1,6 @@
 from datetime import date, datetime
 
+from typing import Union
 from ..utilities import decorators, settings, util
 from ..utilities.errors import MissingArgumentsError
 from ..utilities.request import Request
@@ -96,7 +97,7 @@ class TransferRecipient(Request):
         }
         return self.post(path, payload)
 
-    def list_recipients(self, per_page: int = None, page: int = None, from_date: date | datetime | str = None, to_date: date | datetime | str = None):
+    def list_recipients(self, per_page: int = None, page: int = None, from_date: Union[date, datetime, str] = None, to_date: Union[date, datetime, str] = None):
         """List transfer recipients available on your integration
 
         Args:
@@ -104,9 +105,9 @@ class TransferRecipient(Request):
                 If not specify we use a default value of 50. Defaults to None.
             page (int, optional): Specify exactly what page you want to retrieve.
                 If not specify we use a default value of 1.. Defaults to None.
-            from_date (date | datetime | str, optional): A timestamp from which to start listing transfer recipients
+            from_date (Union[date, datetime, str], optional): A timestamp from which to start listing transfer recipients
                 e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
-            to_date (date | datetime | str, optional): A timestamp at which to stop listing transfer recipients
+            to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing transfer recipients
                 e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
         Returns:
@@ -118,11 +119,11 @@ class TransferRecipient(Request):
             return self.get(util.handle_query_params(self.path, params))
         return self.get(self.path)
 
-    def fetch(self, recipient: int | str):
+    def fetch(self, recipient: Union[int, str]):
         """Fetch the details of a transfer recipient.
 
         Args:
-            recipient (int | str): An ID or code for the recipient whose details you want to receive..
+            recipient (Union[int, str]): An ID or code for the recipient whose details you want to receive..
 
         Returns:
             JSON: Data fetched from API
@@ -132,11 +133,11 @@ class TransferRecipient(Request):
 
         return self.get(path)
 
-    def update(self, recipient: int | str, name: str = None, email: str = None):
+    def update(self, recipient: Union[int, str], name: str = None, email: str = None):
         """Update an existing recipient. An duplicate account number will lead to the retrieval of the existing record.
             
         Args:
-            recipient (int | str): Transfer Recipient's ID or code
+            recipient (Union[int, str]): Transfer Recipient's ID or code
             name (str, optional): A name for the recipient. Defaults to None.
             email (str, optional): Email address of the recipient. Defaults to None.
 
@@ -155,11 +156,11 @@ class TransferRecipient(Request):
 
         return self.put(path, payload)
 
-    def delete(self, recipient: int | str):
+    def delete(self, recipient: Union[int, str]):
         """Deletes a transfer recipient (sets the transfer recipient to inactive).
         
         Args:
-            recipient (int | str): An ID or code for the recipient who you want to delete.
+            recipient (Union[int, str]): An ID or code for the recipient who you want to delete.
         
         Returns:
             JSON: Data fetched from API

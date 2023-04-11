@@ -1,5 +1,6 @@
 from datetime import date, datetime
 
+from typing import Union
 from ..utilities import settings, util, decorators
 from ..utilities.errors import UnwantedArgumentsError
 from ..utilities.request import Request
@@ -14,13 +15,13 @@ class Invoice(Request):
 
     path = '/paymentrequest'
 
-    def create(self, customer: int | str, description: str, due_date: date | datetime | str, amount: int = None, line_items: list[dict[str]] = None, tax: list[dict[str]] = None, currency: str = None, send_notification: bool = None, draft: bool = None, has_invoice: bool = None, invoice_number: int = None, split_code: str = None):
+    def create(self, customer: Union[int, str], description: str, due_date: Union[date, datetime, str], amount: int = None, line_items: list[dict[str]] = None, tax: list[dict[str]] = None, currency: str = None, send_notification: bool = None, draft: bool = None, has_invoice: bool = None, invoice_number: int = None, split_code: str = None):
         """Create an invoice for payment on your integration.
 
         Args:
-            customer (int | str): Customer ID or code.
+            customer (Union[int, str]): Customer ID or code.
             description (str): A short description of the payment request
-            due_date (date | datetime | str): ISO 8601 representation of request due date
+            due_date (Union[date, datetime, str]): ISO 8601 representation of request due date
                 eg. 2016-09-24T00:00:05.000Z, 2016-09-21. 
             amount (int, optional): Payment request amount. It should be used when line items and tax values aren't specified.
                 Defaults to None.
@@ -59,7 +60,7 @@ class Invoice(Request):
 
         return self.post(self.path, payload)
 
-    def list_invoices(self, per_page: int = None, page: int = None, customer: int = None, status: str = None, currency: str = None, from_date: date | datetime | str = None, to_date: date | datetime | str = None, include_archive: str = None):
+    def list_invoices(self, per_page: int = None, page: int = None, customer: int = None, status: str = None, currency: str = None, from_date: Union[date, datetime, str] = None, to_date: Union[date, datetime, str] = None, include_archive: str = None):
         """List invoice available on your integration
 
         Args:
@@ -70,9 +71,9 @@ class Invoice(Request):
             customer (int, optional): Filter by customer ID. Defaults to None.
             currency (str, optional): Filter by currency. Allowed values are NGN, GHS, ZAR and USD.
             status (str, optional): Filter by invoice status. Defaults to None.
-            from_date (date | datetime | str, optional): A timestamp from which to start listing invoice
+            from_date (Union[date, datetime, str], optional): A timestamp from which to start listing invoice
                 e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
-            to_date (date | datetime | str, optional): A timestamp at which to stop listing invoice
+            to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing invoice
                 e.g. 2016-09-24T00:00:05.000Z, 201. Defaults to None.
             include_archive (str, optional): Show archived invoices. Defaults to None.
 
@@ -93,11 +94,11 @@ class Invoice(Request):
             return self.get(util.handle_query_params(self.path, params))
         return self.get(self.path)
 
-    def view(self, invoice: int | str):
+    def view(self, invoice: Union[int, str]):
         """Get details of an invoice on your integration.
 
         Args:
-            invoice (int | str): ID or code of the invoice
+            invoice (Union[int, str]): ID or code of the invoice
 
         Returns:
             JSON: Data fetched from API
@@ -156,7 +157,7 @@ class Invoice(Request):
         path = f"{self.path}/finalize/{util.check_code(settings.INVOICE, invoice_code)}"
         return self.get(path)
 
-    def update(self, invoice: int | str, customer: int | str = None, amount: int = None, currency: str = None, due_date: date | datetime | str = None, description: str = None, line_items: list[dict[str]] = None, tax: list[dict[str]] = None, send_notification: bool = None, draft: bool = None, invoice_number: int = None, split_code: str = None):
+    def update(self, invoice: Union[int, str], customer: Union[int, str] = None, amount: int = None, currency: str = None, due_date: Union[date, datetime, str] = None, description: str = None, line_items: list[dict[str]] = None, tax: list[dict[str]] = None, send_notification: bool = None, draft: bool = None, invoice_number: int = None, split_code: str = None):
         """Update an invoice details on your integration.
 
         Args:
@@ -165,7 +166,7 @@ class Invoice(Request):
             amount (int, optional): Payment request amount. Only useful if line items and tax values are ignored.
                 endpoint will throw a friendly warning if neither is available.. Defaults to None.
             currency (str, optional): Specify the currency of the invoice. Allowed values are NGN, GHS, ZAR and USD Defaults to NGN
-            due_date (date | datetime | str, optional): ISO 8601 representation of request due date. Defaults to None.
+            due_date (Union[date, datetime, str], optional): ISO 8601 representation of request due date. Defaults to None.
             description (str, optional): A short description of the payment request. Defaults to None.
             line_items (list[dict[str]], optional): Array of line items int the format [{"name":"item 1", "amount":2000}]. Defaults to None.
             tax (list[dict[str]], optional): Array of taxes to be charged in the format [{"name":"VAT", "amount":2000}]. Defaults to None.
@@ -206,11 +207,11 @@ class Invoice(Request):
 
         return self.put(path, payload)
 
-    def archive(self, invoice: int | str):
+    def archive(self, invoice: Union[int, str]):
         """Used to archive an invoice. Invoice will no longer be fetched on list or returned on verify:
 
         Args:
-            invoice (int | str): The invoice ID or code
+            invoice (Union[int, str]): The invoice ID or code
 
         Returns:
             JSON: Data fetched from API

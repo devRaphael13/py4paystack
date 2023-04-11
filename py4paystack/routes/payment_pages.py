@@ -1,5 +1,6 @@
 from datetime import date, datetime
 
+from typing import Union
 from ..utilities import util, decorators
 from ..utilities.request import Request
 
@@ -37,7 +38,7 @@ class PaymentPages(Request):
         payload = util.generate_payload(locals())
         return self.post(self.path, payload)
 
-    def list_pages(self, per_page: int = None, page: int = None, from_date: date | datetime | str = None, to_date: date | datetime | str = None):
+    def list_pages(self, per_page: int = None, page: int = None, from_date: Union[date, datetime, str] = None, to_date: Union[date, datetime, str] = None):
         """List payment pages available on your integration.
 
         Args:
@@ -45,9 +46,9 @@ class PaymentPages(Request):
                 If not specify we use a default value of 50.
             page (int, optional): Specify exactly what page you want to retrieve.
                 If not specify we use a default value of 1.
-            from_date (date | datetime | str, optional): A timestamp from which to start listing page
+            from_date (Union[date, datetime, str], optional): A timestamp from which to start listing page
                 e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
-            to_date (date | datetime | str, optional): A timestamp at which to stop listing page
+            to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing page
                 e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
         Returns:
@@ -60,11 +61,11 @@ class PaymentPages(Request):
             return self.get(util.handle_query_params(self.path, params))
         return self.get(self.path)
 
-    def fetch(self, id_or_slug: int | str):
+    def fetch(self, id_or_slug: Union[int, str]):
         """Get details of a payment page on your integration.
 
         Args:
-            id_or_slug (int | str): The page ID or slug you want to fetch
+            id_or_slug (Union[int, str]): The page ID or slug you want to fetch
 
         Returns:
             JSON: Data fetched from API
@@ -73,11 +74,11 @@ class PaymentPages(Request):
         path = f"{self.path}/{id_or_slug}"
         return self.get(path)
 
-    def update(self, id_or_slug: int | str, name: str = None, description: str = None, amount: int = None, active: bool = None):
+    def update(self, id_or_slug: Union[int, str], name: str = None, description: str = None, amount: int = None, active: bool = None):
         """Update a payment page details on your integration
 
         Args:
-            id_or_slug (int | str): Page ID or slug.
+            id_or_slug (Union[int, str]): Page ID or slug.
             name (str, optional): Name of page. Defaults to None.
             description (str, optional): A description for this page. Defaults to None.
             amount (int, optional): Default amount you want to accept using this page.

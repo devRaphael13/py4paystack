@@ -1,5 +1,6 @@
 import datetime
 
+from typing import Union
 from ..utilities import settings, util, decorators
 from ..utilities.request import Request
 
@@ -34,7 +35,7 @@ class Customer(Request):
         payload['email'] = util.check_email(email)
         return self.post(self.path, payload)
 
-    def list_customers(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
+    def list_customers(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None):
         """List customers available on your integration.
 
         Args:
@@ -42,9 +43,9 @@ class Customer(Request):
                 If not specify we use a default value of 50. Defaults to None.
             page (int, optional): Specify exactly what page you want to retrieve.
                 If not specify we use a default value of 1. Defaults to None.
-            from_date (datetime.datetime | datetime.date | str, optional): A timestamp from which to start listing customers
+            from_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp from which to start listing customers
                 e.g. 2016-09-24T00:00:05.000Z, 2016. Defaults to None.
-            to_date (datetime.datetime | datetime.date | str, optional): A timestamp at which to stop listing customers
+            to_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp at which to stop listing customers
                 e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
         Returns:

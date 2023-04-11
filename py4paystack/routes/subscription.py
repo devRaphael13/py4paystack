@@ -1,5 +1,6 @@
 import datetime
 
+from typing import Union
 from ..utilities import settings, util, decorators
 from ..utilities.request import Request
 
@@ -13,7 +14,7 @@ class Subscription(Request):
 
     path = "/subscription"
 
-    def create(self, email_or_customer_code: str, plan_code: str, authorization_code: str = None, start_date: datetime.datetime | datetime.date | str = None):
+    def create(self, email_or_customer_code: str, plan_code: str, authorization_code: str = None, start_date: Union[datetime.datetime, datetime.date, str] = None):
         """Create a subscription on your integration
 
         Args:
@@ -22,7 +23,7 @@ class Subscription(Request):
             authorization_code (str, optional): If customer has multiple authorizations,
                 you can set the desired authorization you wish to use for this subscription here.
                 If this is not supplied, the customer's most recent authorization would be used. Defaults to None.
-            start_date (datetime.datetime | datetime.date | str, optional): Set the date for the first debit. 
+            start_date (Union[datetime.datetime, datetime.date, str], optional): Set the date for the first debit. 
                 (ISO 8601 format) e.g. 2017-05-16T00:30:13+01:00. Defaults to None.
 
         Returns:
@@ -64,11 +65,11 @@ class Subscription(Request):
             return self.get(util.handle_query_params(self.path, params))
         return self.get(self.path)
 
-    def fetch(self, subscription: int | str):
+    def fetch(self, subscription: Union[int, str]):
         """Get details of a subscription on your integration.
 
         Args:
-            subscription (int | str): The subscription ID or code you want to fetch.
+            subscription (Union[int, str]): The subscription ID or code you want to fetch.
 
         Returns:
             JSON: Data fetched from API

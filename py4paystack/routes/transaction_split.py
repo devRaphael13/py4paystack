@@ -1,5 +1,5 @@
 import datetime
-from typing import Iterable
+from typing import Iterable, Union
 
 from ..utilities import settings, util, decorators
 from ..utilities.request import Request
@@ -44,7 +44,7 @@ class TransactionSplit(Request):
 
         return self.post(self.path, payload=payload)
 
-    def list_search(self, name: str = None, active: bool = None, sort_by: str = None, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None):
+    def list_search(self, name: str = None, active: bool = None, sort_by: str = None, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None):
         """List/search for the transaction splits available on your integration.
 
         Args:
@@ -53,9 +53,9 @@ class TransactionSplit(Request):
             sort_by (str, optional): Sort by name, defaults to createdAt date. Defaults to None.
             per_page (int, optional): Number of splits per page. If not specify we use a default value of 50.
             page (int, optional): Page number to view. If not specify we use a default value of 1.
-            from_date (datetime.datetime | datetime.date | str, optional): A timestamp from which to start listing splits
+            from_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp from which to start listing splits
                 e.g. 2019-09-24T00:00:05.000Z, 2019-09-21. Defaults to None.
-            to_date (datetime.datetime | datetime.date | str, optional): A timestamp at which to stop listing splits
+            to_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp at which to stop listing splits
                 e.g. 2019-09-24T00:00:05.000Z, 2019-09-21. Defaults to None.
 
         Returns:

@@ -1,8 +1,12 @@
 ## Py4paystack
+
 A paystack API wrapper with type checking written in python
 
 ## Contents
+
 - [Installation](#installation)
+- [Type Checking](#type-checking)
+- [Requirements](#requirements)
 - [Accept payments](#accept-payments)
 - [Advanced Usage](#advanced-usage)
 - [API Routes](#routes)
@@ -12,7 +16,23 @@ A paystack API wrapper with type checking written in python
 
 ## Installation
 
-Run `pip install py4paystack` on the commandline to install
+Run `pip install py4paystack` on the commandline to install.
+
+<br>
+
+<br>
+
+## Requirements
+
+- python-dotenv
+
+<br>
+
+<br>
+
+## Type Checking
+
+The Type checking funtion is on by default, turn of by setting `TYPE_CHECK` to `False` in your .env file.
 
 <br>
 
@@ -21,7 +41,7 @@ Run `pip install py4paystack` on the commandline to install
 To accept payments, you can import the Transaction class from the routes module if that'll be all you need, alternatively you can import the Paystack class like if you need more functionality.
 
 ```{python}
-from py4paystack.routes import Transaction # or from py4paystack import Paystack
+from py4paystack.routes.transactions import Transaction # or from py4paystack import Paystack
 
 trans = Transaction('ExampleSecretKey') # or
 trans = Paystack('ExampleSecretKey).transaction()
@@ -54,6 +74,7 @@ For more use cases keep reading........... or check out [paystack api documentat
 <br>
 
 ## Routes
+
 - [Paystack](#paystack)
 - [Apple Pay](#apple-pay)
 - [Bulk Charges](#bulk-charges)
@@ -72,10 +93,10 @@ For more use cases keep reading........... or check out [paystack api documentat
 - [Subaccount](#subaccounts)
 - [Subscription](#subscription)
 - [Transaction Split](#transaction-split)
-- [Transactions](#transaction)
+- [Transaction](#transaction)
 - [Transfer Control](#transfer-control)
 - [Transfer Recipient](#transfer-recipient)
-- [Transfers](#transfer)
+- [Transfer](#transfer)
 - [Verification](#verification)
 
 <br>
@@ -85,6 +106,9 @@ For more use cases keep reading........... or check out [paystack api documentat
 <br>
 
 ## **Paystack**
+
+    py4paystack.paystack.Paystack
+
 <br>
 
 `Paystack(secret_key: str)`
@@ -143,8 +167,9 @@ General class that hold all the functionalities of the Paystack API (essentially
 <br>
 <br>
 
-
 ## **Apple Pay**
+
+    py4paystack.routes.apple_pay.ApplePay
 
 <br>
 
@@ -201,6 +226,8 @@ The Apple Pay API allows you register your application's top-level domain or sub
 
 ## **Bulk Charges**
 
+    py4paystack.routes.bulk_charges.BulkCharges
+
 <br>
 
 `BulkCharges(secret_key: str)`
@@ -211,14 +238,14 @@ The Bulk Charges API allows you create and manage multiple recurring payments fr
 
 ### **Methods**
 
-- `fetch_batches(self, id_or_code: int | str)`
+- `fetch_batches(self, id_or_code: Union[int, str])`
 
   This endpoint retrieves a specific batch code.
   It also returns useful information on its progress by way of the total_charges and pending_charges attributes.
 
   **Args**:
 
-        id_or_code (int | str): An ID or code for the charge whose batches you want to retrieve.
+        id_or_code (Union[int, str]): An ID or code for the charge whose batches you want to retrieve.
 
   **Returns**:
 
@@ -226,7 +253,7 @@ The Bulk Charges API allows you create and manage multiple recurring payments fr
 
 <br>
 
-- `fetch_charges_in_batch(self, id_or_code: int | str, status: str = None, per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None)`
+- `fetch_charges_in_batch(self, id_or_code: Union[int, str], status: str = None, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None)`
 
   This endpoint retrieves the charges associated with a specified batch code.
   Pagination parameters are available.
@@ -234,7 +261,7 @@ The Bulk Charges API allows you create and manage multiple recurring payments fr
 
   **Args**:
 
-        id_or_code (int | str): An ID or code for the batch whose charges you want to retrieve.
+        id_or_code (Union[int, str]): An ID or code for the batch whose charges you want to retrieve.
 
         status ( str ): Either one of these values: 'pending', 'success' or 'failed'
 
@@ -242,9 +269,9 @@ The Bulk Charges API allows you create and manage multiple recurring payments fr
 
         page (Optional[ int ]): Specify exactly what transfer you want to page. If not specify we use a default value of 1.
 
-        from_date (Optional[ date | datetime | str ]): A timestamp from which to start listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
+        from_date (Optional[ Union[date, datetime, str] ]): A timestamp from which to start listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
 
-        to_date (Optional[ date | datetime | str ]): A timestamp at which to stop listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
+        to_date (Optional[ Union[date, datetime, str] ]): A timestamp at which to stop listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
 
   **Returns**:
 
@@ -268,7 +295,7 @@ The Bulk Charges API allows you create and manage multiple recurring payments fr
 
 <br>
 
-- `list_batches(self, per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None)`
+- `list_batches(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None)`
 
   This lists all bulk charge batches created by the integration. Statuses can be active, paused, or complete.
 
@@ -278,9 +305,9 @@ The Bulk Charges API allows you create and manage multiple recurring payments fr
 
         page (Optional[ int ]): Specify exactly what transfer you want to page. If not specify we use a default value of 1.
 
-        from_date (Optional[ date | datetime | str ]): A timestamp from which to start listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
+        from_date (Optional[ Union[date, datetime, str] ]): A timestamp from which to start listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
 
-        to_date (Optional[ date | datetime | str ]): A timestamp at which to stop listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
+        to_date (Optional[ Union[date, datetime, str] ]): A timestamp at which to stop listing batches e.g. 2016-09-24T00:00:05.000Z, 2016-09-21
 
   **Returns**:
 
@@ -321,6 +348,8 @@ The Bulk Charges API allows you create and manage multiple recurring payments fr
 <br>
 
 ## **Charge**
+
+    py4paystack.routes.charge.Charge
 
 <br>
 
@@ -416,13 +445,13 @@ The Charge API allows you to configure payment channel of your choice when initi
 
   <br>
 
-- `submit_birthday(self, birthday: datetime.date | datetime.datetime | str, reference: str)`
+- `submit_birthday(self, birthday: Union[datetime.datetime, datetime.date, str], reference: str)`
 
       Submit Phone when requested
 
       **Args**:
 
-          birthday ( date | datetime | str ): birthday submitted by the user
+          birthday ( Union[date, datetime, str] ): birthday submitted by the user
 
           reference (str): Reference of the ongoing transaction
 
@@ -485,7 +514,7 @@ The Charge API allows you to configure payment channel of your choice when initi
 <br>
 
 ## **Control Panel**
-
+    py4paystack.routes.control_panel.ControlPanel
 <br>
 
 `ControlPanel(*args, **kwargs)`
@@ -524,7 +553,7 @@ The Control Panel API allows you manage some settings on your integration
 <br>
 
 ## **Customer**
-
+    py4paystack.routes.customer.Customer
 <br>
 
 `Customer(secret_key: str)`
@@ -587,7 +616,7 @@ The Control Panel API allows you manage some settings on your integration
 
   <br>
 
-- `list_customers(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None)`
+- `list_customers(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None)`
 
       List customers available on your integration.
 
@@ -597,9 +626,9 @@ The Control Panel API allows you manage some settings on your integration
 
           page (int, optional): Specify exactly what page you want to retrieve. If not specify we use a default value of 1.
 
-          from_date (datetime.datetime | datetime.date | str, optional): A timestamp from which to start listing customers e.g 2016-09-24T00:00:05.000Z, 2016. Defaults to None.
+          from_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp from which to start listing customers e.g 2016-09-24T00:00:05.000Z, 2016. Defaults to None.
 
-          to_date (datetime.datetime | datetime.date | str, optional): A timestamp at which to stop listing customers e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+          to_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp at which to stop listing customers e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
       **Returns**:
 
@@ -680,6 +709,8 @@ The Control Panel API allows you manage some settings on your integration
 
 ## **Disputes**
 
+    py4paystack.routes.disputes.Disputes
+
 <br>
 
 `Disputes(secret_key: str)`
@@ -690,7 +721,7 @@ The Disputes API allows you manage transaction disputes on your integration
  	
 ### **Methods**:
 
-- `add_evidence(self, dispute_id: int, customer_email: str, customer_name: str, customer_phone: str, service_details: str, delivery_address: str = None, delivery_date: datetime.date | datetime.datetime | str = None)`
+- `add_evidence(self, dispute_id: int, customer_email: str, customer_name: str, customer_phone: str, service_details: str, delivery_address: str = None, delivery_date: Union[datetime.datetime, datetime.date, str] = None)`
 
       Provide evidence for the dispute.
 
@@ -708,7 +739,7 @@ The Disputes API allows you manage transaction disputes on your integration
 
           delivery_address (str, optional): Delivery Address. Defaults to None.
 
-          delivery_date (date | datetime | str, optional): ISO 8601 representation of delivery date (YYYY-MM-DD). Defaults to None.
+          delivery_date (Union[date, datetime, str], optional): ISO 8601 representation of delivery date (YYYY-MM-DD). Defaults to None.
 
       **Returns**:
 
@@ -716,7 +747,7 @@ The Disputes API allows you manage transaction disputes on your integration
 
   <br>
 
-- `export(self, per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None, transaction_id: int = None, status: str = None)`
+- `export(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None, transaction_id: int = None, status: str = None)`
 
       Export disputes available on your integration
 
@@ -726,9 +757,9 @@ The Disputes API allows you manage transaction disputes on your integration
 
           page (int, optional): Specify exactly what dispute you want to page. If not specify we use a default value of 1. Defaults to None.
 
-          from_date (date | datetime | str, optional): A timestamp from which to start listing dispute e.g. 2016-09-21. Defaults to None.
+          from_date (Union[date, datetime, str], optional): A timestamp from which to start listing dispute e.g. 2016-09-21. Defaults to None.
 
-          to_date (date | datetime | str, optional): A timestamp at which to stop listing dispute e.g. 2016-09-21. Defaults to None.
+          to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing dispute e.g. 2016-09-21. Defaults to None.
 
           transaction_id (int, optional): Transaction ID. Defaults to None.
 
@@ -770,7 +801,7 @@ The Disputes API allows you manage transaction disputes on your integration
 
   <br>
 
-- `list_disputes(self, page: int = None, per_page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None, transaction_id: int = None, status: str = None)`
+- `list_disputes(self, page: int = None, per_page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None, transaction_id: int = None, status: str = None)`
 
       List all the dispute filed against you.
 
@@ -780,9 +811,9 @@ The Disputes API allows you manage transaction disputes on your integration
 
           per_page (int, optional): Specify how many records you want to retrieve per page. If not specify we use a default value of 50.Defaults to None.
 
-          from_date (date | datetime | str, optional): A timestamp from which to start listing dispute e.g. 2016-09-21. Defaults to None.
+          from_date (Union[date, datetime, str], optional): A timestamp from which to start listing dispute e.g. 2016-09-21. Defaults to None.
 
-          to_date (date | datetime | str, optional): A timestamp at which to stop listing dispute e.g. 2016-09-21. Defaults to None.
+          to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing dispute e.g. 2016-09-21. Defaults to None.
 
           transaction_id (int, optional): Transaction Id. Defaults to None.
 
@@ -856,6 +887,8 @@ The Disputes API allows you manage transaction disputes on your integration
 
 ## **Dedicated Virtual Accounts**
 
+    py4paystack.routes.virtual_accounts.DedicatedVirtualAccounts
+
 <br>
 
 `DedicatedVirtualAccounts(secret_key: str)`
@@ -866,13 +899,13 @@ The Dedicated Virtual Account class enables Nigerian merchants to manage unique 
 
 <br>
 
-- `create(self, customer: int | str, preferred_bank: str, subaccount: str = None, split_code: str = None, first_name: str = None, last_name: str = None, phone: str = None)`
+- `create(self, customer: Union[int, str], preferred_bank: str, subaccount: str = None, split_code: str = None, first_name: str = None, last_name: str = None, phone: str = None)`
 
   Create a dedicated virtual account and assign to a customer. Paystack currently supports Access Bank and Wema Bank.
 
   **Args**:
 
-      customer (int | str): Customer ID or code
+      customer (Union[int, str]): Customer ID or code
 
       preferred_bank (str): The bank slug for preferred bank. To get a list of available banks, use the List Providers endpoint
 
@@ -985,19 +1018,19 @@ The Dedicated Virtual Account class enables Nigerian merchants to manage unique 
 
 <br>
 
-- `split_transaction(self, customer: int | str, preferred_bank: str, subaccount: str | list = None, split_code: str | list = None)`
+- `split_transaction(self, customer: Union[int, str], preferred_bank: str, subaccount: Union[str, list] = None, split_code: Union[str, list] = None)`
 
   Split a dedicated virtual account transaction with one or more accounts
 
   **Args**:
 
-      customer (int | str): Customer ID or code.
+      customer (Union[int, str]): Customer ID or code.
 
       preferred_bank (str): The bank slug for preferred bank. To get a list of available banks, use the List Providers endpoint
 
-      subaccount (str | list, optional): Subaccount code of the account you want to split the transaction with. Defaults to None.
+      subaccount (Union[str, list], optional): Subaccount code of the account you want to split the transaction with. Defaults to None.
 
-      split_code (str | list, optional): Split code consisting of the lists of accounts you want to split the transaction with. Defaults to None.
+      split_code (Union[str, list], optional): Split code consisting of the lists of accounts you want to split the transaction with. Defaults to None.
 
   **Raises**:
 
@@ -1015,19 +1048,21 @@ The Dedicated Virtual Account class enables Nigerian merchants to manage unique 
 
 ## **Invoice**
 
+    py4paystack.routes.invoice.Invoice
+
 `Invoice(secret_key: str)`
 
 The Invoices API allows you issue out and manage payment requests
 
 ### **Methods**:
 
-- `archive(self, invoice: int | str)`
+- `archive(self, invoice: Union[int, str])`
 
   Used to archive an invoice. Invoice will no longer be fetched on list or returned on verify:
 
   **Args**:
 
-        invoice (int | str): The invoice ID or code
+        invoice (Union[int, str]): The invoice ID or code
 
   **Returns**:
 
@@ -1035,16 +1070,16 @@ The Invoices API allows you issue out and manage payment requests
 
 <br>
 
-- `create(self, customer: int | str, description: str, due_date: datetime.date | datetime.datetime | str, amount: int = None, line_items: list[dict[str]] = None, tax: list[dict[str]] = None, currency: str = None, send_notification: bool = None, draft: bool = None, has_invoice: bool = None, invoice_number: int = None, split_code: str = None)`
+- `create(self, customer: Union[int, str], description: str, due_date: Union[datetime.datetime, datetime.date, str], amount: int = None, line_items: list[dict[str]] = None, tax: list[dict[str]] = None, currency: str = None, send_notification: bool = None, draft: bool = None, has_invoice: bool = None, invoice_number: int = None, split_code: str = None)`
 
   Create an invoice for payment on your integration.
 
   **Args**:
 
-        customer (int | str): Customer ID or code.
+        customer (Union[int, str]): Customer ID or code.
         description (str): A short description of the payment request
 
-        due_date (date | datetime | str): ISO 8601 representation of request due datec eg. 2016-09-24T00:00:05.000Z, 2016-09-21.
+        due_date (Union[date, datetime, str]): ISO 8601 representation of request due datec eg. 2016-09-24T00:00:05.000Z, 2016-09-21.
 
         amount (int, optional): Payment request amount. It should be used when line items and tax values aren't specified.
         Defaults to None.
@@ -1089,7 +1124,7 @@ The Invoices API allows you issue out and manage payment requests
 
 <br>
 
-- `list_invoices(self, per_page: int = None, page: int = None, customer: int = None, status: str = None, currency: str = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None, include_archive: str = None)`
+- `list_invoices(self, per_page: int = None, page: int = None, customer: int = None, status: str = None, currency: str = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None, include_archive: str = None)`
 
   List invoice available on your integration
 
@@ -1105,9 +1140,9 @@ The Invoices API allows you issue out and manage payment requests
 
   status (str, optional): Filter by invoice status. Defaults to None.
 
-  from_date (date | datetime | str, optional): A timestamp from which to start listing invoice e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+  from_date (Union[date, datetime, str], optional): A timestamp from which to start listing invoice e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
-  to_date (date | datetime | str, optional): A timestamp at which to stop listing invoice e.g. 2016-09-24T00:00:05.000Z, 201. Defaults to None.
+  to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing invoice e.g. 2016-09-24T00:00:05.000Z, 201. Defaults to None.
 
   include_archive (str, optional): Show archived invoices. Defaults to None.
 
@@ -1139,7 +1174,7 @@ The Invoices API allows you issue out and manage payment requests
 
 <br>
 
-- `update(self, invoice: int | str, customer: int | str = None, amount: int = None, currency: str = None, due_date: datetime.date | datetime.datetime | str = None, description: str = None, line_items: list[dict[str]] = None, tax: list[dict[str]] = None, send_notification: bool = None, draft: bool = None, invoice_number: int = None, split_code: str = None)`
+- `update(self, invoice: Union[int, str], customer: Union[int, str] = None, amount: int = None, currency: str = None, due_date: Union[datetime.datetime, datetime.date, str] = None, description: str = None, line_items: list[dict[str]] = None, tax: list[dict[str]] = None, send_notification: bool = None, draft: bool = None, invoice_number: int = None, split_code: str = None)`
 
   Update an invoice details on your integration.
 
@@ -1155,7 +1190,7 @@ The Invoices API allows you issue out and manage payment requests
 
         currency (str, optional): Specify the currency of the invoice. Allowed values are NGN, GHS, ZAR and USD Defaults to NGN
 
-        due_date (date | datetime | str, optional): ISO 8601 representation of request due date. Defaults to None.
+        due_date (Union[date, datetime, str], optional): ISO 8601 representation of request due date. Defaults to None.
 
         description (str, optional): A short description of the payment request. Defaults to None.
 
@@ -1192,13 +1227,13 @@ The Invoices API allows you issue out and manage payment requests
 
 <br>
 
-- `view(self, invoice: int | str)`
+- `view(self, invoice: Union[int, str])`
 
   Get details of an invoice on your integration.
 
   **Args**:
 
-        invoice (int | str): ID or code of the invoice
+        invoice (Union[int, str]): ID or code of the invoice
 
   **Returns**:
 
@@ -1211,6 +1246,8 @@ The Invoices API allows you issue out and manage payment requests
 <br>
 
 ## **Miscellaneous**
+
+    py4paystack.routes.miscellaneous.Miscellaneous
 
 <br>
 
@@ -1245,7 +1282,7 @@ The Miscellaneous API are supporting APIs that can be used to provide more detai
 
   **Returns**:
 
-        JSON: Data fetched from API
+      JSON: Data fetched from API
 
 <br>
 
@@ -1292,6 +1329,8 @@ The Miscellaneous API are supporting APIs that can be used to provide more detai
 <br>
 
 ## **Payment Pages**
+
+    py4paystack.routes.payment_pages.PaymentPages
 
 <br>
 
@@ -1357,13 +1396,13 @@ The Payment Pages API provides a quick and secure way to collect payment for pro
 
 <br>
 
-- `fetch(self, id_or_slug: int | str)`
+- `fetch(self, id_or_slug: Union[int, str])`
 
   Get details of a payment page on your integration.
 
   **Args**:
 
-      id_or_slug (int | str): The page ID or slug you want to fetch
+      id_or_slug (Union[int, str]): The page ID or slug you want to fetch
 
   **Returns**:
 
@@ -1371,7 +1410,7 @@ The Payment Pages API provides a quick and secure way to collect payment for pro
 
 <br>
 
-- `list_pages(self, per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None)`
+- `list_pages(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None)`
 
   List payment pages available on your integration.
 
@@ -1381,9 +1420,9 @@ The Payment Pages API provides a quick and secure way to collect payment for pro
 
       page (int, optional): Specify exactly what page you want to retrieve. If not specify we use a default value of 1.
 
-        from_date (date | datetime | str, optional): A timestamp from which to start listing page e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+        from_date (Union[date, datetime, str], optional): A timestamp from which to start listing page e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
-        to_date (date | datetime | str, optional): A timestamp at which to stop listing page e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+        to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing page e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
   **Returns**:
 
@@ -1391,13 +1430,13 @@ The Payment Pages API provides a quick and secure way to collect payment for pro
 
 <br>
 
-- `update(self, id_or_slug: int | str, name: str = None, description: str = None, amount: int = None, active: bool = None)`
+- `update(self, id_or_slug: Union[int, str], name: str = None, description: str = None, amount: int = None, active: bool = None)`
 
   Update a payment page details on your integration
 
   **Args**:
 
-      id_or_slug (int | str): Page ID or slug.
+      id_or_slug (Union[int, str]): Page ID or slug.
 
       name (str, optional): Name of page. Defaults to None.
 
@@ -1418,6 +1457,8 @@ The Payment Pages API provides a quick and secure way to collect payment for pro
 <br>
 
 ## **Plan**
+
+    py4paystack.routes.plans.Plan
 
 <br>
 
@@ -1457,13 +1498,13 @@ The Plans API allows you create and manage installment payment options on your i
 
 <br>
 
-- `fetch(self, plan: int | str)`
+- `fetch(self, plan: Union[int, str])`
 
   Get details of a plan on your integration.
 
   **Args**:
 
-      plan (int | str): The plan ID or code you want to fetch.
+      plan (Union[int, str]): The plan ID or code you want to fetch.
 
   **Returns**:
 
@@ -1493,13 +1534,13 @@ The Plans API allows you create and manage installment payment options on your i
 
 <br>
 
-- `update(self, plan: int | str, name: str = None, amount: int = None, interval: str = None, description: str = None, currency: str = None, send_invoices: bool = None, send_sms: bool = None, invoice_limit: int = None)`
+- `update(self, plan: Union[int, str], name: str = None, amount: int = None, interval: str = None, description: str = None, currency: str = None, send_invoices: bool = None, send_sms: bool = None, invoice_limit: int = None)`
 
       Update a plan details on your integration.
 
       **Args**:
 
-      	plan (int | str): Code or ID of the plan to update.
+      	plan (Union[int, str]): Code or ID of the plan to update.
 
       	name (str, optional): Name of plan. Defaults to None.
 
@@ -1528,6 +1569,8 @@ The Plans API allows you create and manage installment payment options on your i
 <br>
 
 ## **Product**
+
+    py4paystack.routes.product.Product
 
 <br>
 
@@ -1577,7 +1620,7 @@ The Products API allows you create and manage inventories on your integration
 
 <br>
 
-- `list_products(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None)`
+- `list_products(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None)`
 
   List products available on your integration.
 
@@ -1587,9 +1630,9 @@ The Products API allows you create and manage inventories on your integration
 
         page (int, optional): Specify exactly what page you want to retrieve. If not specify we use a default value of 1.. Defaults to None.
 
-        from_date (datetime.datetime | datetime.date | str, optional): A timestamp from which to start listing product e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+        from_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp from which to start listing product e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
-        to_date (datetime.datetime | datetime.date | str, optional): A timestamp at which to stop listing product e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+        to_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp at which to stop listing product e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
   **Returns**:
 
@@ -1629,6 +1672,8 @@ The Products API allows you create and manage inventories on your integration
 
 ## **Refund**
 
+    py4paystack.routes.refund.Refund
+
 <br>
 
 `Refund(secret_key: str)`
@@ -1639,13 +1684,13 @@ The Refunds API allows you create and manage transaction refunds
 
 <br>
 
-- `create(self, transaction: str | int, amount: int = None, currency: str = None, customer_note: str = None, merchant_note: str = None)`
+- `create(self, transaction: Union[str, int], amount: int = None, currency: str = None, customer_note: str = None, merchant_note: str = None)`
 
   Initiate a refund on your integration
 
   **Args**:
 
-      transaction (str | int): Transaction reference or id
+      transaction (Union[str, int]): Transaction reference or id
 
       amount (int, optional): Amount ( in kobo if currency is NGN, pesewas, if currency is GHS, and cents, if currency is ZAR ) to be refunded to the customer. Amount is optional(defaults to original transaction amount) and cannot be more than the original transaction amount.. Defaults to None.
 
@@ -1675,7 +1720,7 @@ The Refunds API allows you create and manage transaction refunds
 
 <br>
 
-- `list_refunds(self, reference: str = None, currency: str = None, per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None)`
+- `list_refunds(self, reference: str = None, currency: str = None, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None)`
 
       List refunds available on your integration.
 
@@ -1689,9 +1734,9 @@ The Refunds API allows you create and manage transaction refunds
 
           page (int, optional): Specify exactly what refund you want to page. If not specify we use a default value of 1.
 
-      	from_date (date | datetime | str, optional): A timestamp from which to start listing refund e.g. 2016-09-21. Defaults to None.
+      	from_date (Union[date, datetime, str], optional): A timestamp from which to start listing refund e.g. 2016-09-21. Defaults to None.
 
-          to_date (date | datetime | str, optional): A timestamp at which to stop listing refund e.g. 2016-09-21. Defaults to None.
+          to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing refund e.g. 2016-09-21. Defaults to None.
 
       **Returns**:
 
@@ -1705,6 +1750,8 @@ The Refunds API allows you create and manage transaction refunds
 
 ## **Settlements**
 
+    py4paystack.routes.settlement.Settlement
+
 <br>
 
 `Settlements(secret_key: str)`
@@ -1715,7 +1762,7 @@ The Settlements API allows you gain insights into payouts made by Paystack to yo
 
 <br>
 
-- `fetch(self, per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None, subaccount: str = None)`
+- `fetch(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None, subaccount: str = None)`
 
   Fetch settlements made to your settlement accounts.
 
@@ -1725,9 +1772,9 @@ The Settlements API allows you gain insights into payouts made by Paystack to yo
 
         page (int, optional): Specify exactly what page you want to retrieve. If not specify we use a default value of 1.
 
-        from_date (date | datetime | str, optional): A timestamp from which to start listing settlements e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+        from_date (Union[date, datetime, str], optional): A timestamp from which to start listing settlements e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
-        to_date (date | datetime | str, optional): A timestamp at which to stop listing settlements e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+        to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing settlements e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
         subaccount (str, optional): Provide a subaccount ID to export only settlements for that subaccount. Set to none to export only transactions for the account. Defaults to None.
 
@@ -1737,7 +1784,7 @@ The Settlements API allows you gain insights into payouts made by Paystack to yo
 
 <br>
 
-- `fetch_transactions(self, settlement_id: int, per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None)`
+- `fetch_transactions(self, settlement_id: int, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None)`
 
   Get the transactions that make up a particular settlement
 
@@ -1749,9 +1796,9 @@ The Settlements API allows you gain insights into payouts made by Paystack to yo
 
         page (int, optional): Specify exactly what page you want to retrieve. If not specify we use a default value of 1.. Defaults to None.
 
-        from_date (date | datetime | str, optional): A timestamp from which to start listing settlement transactions e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+        from_date (Union[date, datetime, str], optional): A timestamp from which to start listing settlement transactions e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
-        to_date (date | datetime | str, optional): A timestamp at which to stop listing settlement transactions e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+        to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing settlement transactions e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
   **Returns**:
 
@@ -1764,6 +1811,8 @@ The Settlements API allows you gain insights into payouts made by Paystack to yo
 <br>
 
 ## **SubAccounts**
+
+    py4paystack.routes.subaccounts.SubAccounts
 
 <br>
 
@@ -1806,13 +1855,13 @@ Subaccounts can be used to split payment between two accounts (your main account
 
 <br>
 
-- `fetch(self, subaccount: int | str)`
+- `fetch(self, subaccount: Union[int, str])`
 
   Get details of a subaccount on your integration.
 
   **Args**:
 
-      subaccount (int | str): The subaccount ID or code you want to fetch.
+      subaccount (Union[int, str]): The subaccount ID or code you want to fetch.
 
   **Returns**:
 
@@ -1820,7 +1869,7 @@ Subaccounts can be used to split payment between two accounts (your main account
 
 <br>
 
-- `list_subaccounts(self, per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None)`
+- `list_subaccounts(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None)`
 
   List subaccounts available on your integration.
 
@@ -1830,9 +1879,9 @@ Subaccounts can be used to split payment between two accounts (your main account
 
         page (int, optional): Specify exactly what page you want to retrieve. If not specify we use a default value of 1.
 
-        from_date (datetime.date | datetime.datetime | str, optional): A timestamp from which to start listing subaccounts e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+        from_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp from which to start listing subaccounts e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
-        to_date (datetime.date | datetime.datetime | str, optional): A timestamp at which to stop listing subaccounts e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+        to_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp at which to stop listing subaccounts e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
   **Returns**:
 
@@ -1840,13 +1889,13 @@ Subaccounts can be used to split payment between two accounts (your main account
 
 <br>
 
-- `update(self, subaccount: int | str, active: bool = None, business_name: str = None, settlement_bank: str = None, account_number: str = None, settlement_schedule: str = None, percentage_charge: float = None, description: str = None, primary_contact_email: str = None, primary_contact_name: str = None, primary_contact_phone: str = None, metadata: str = None)`
+- `update(self, subaccount: Union[int, str], active: bool = None, business_name: str = None, settlement_bank: str = None, account_number: str = None, settlement_schedule: str = None, percentage_charge: float = None, description: str = None, primary_contact_email: str = None, primary_contact_name: str = None, primary_contact_phone: str = None, metadata: str = None)`
 
   Update a subaccount details on your integration.
 
   **Args**:
 
-      subaccount (int | str): Subaccount's ID or code.
+      subaccount (Union[int, str]): Subaccount's ID or code.
 
       active (bool, optional): Activate or deactivate a subaccount. Set value to true to activate subaccount or false to deactivate the subaccount.
 
@@ -1886,13 +1935,15 @@ Subaccounts can be used to split payment between two accounts (your main account
 
 `Subscription(secret_key: str)`
 
+    py4paystack.routes.subscription.Subscription
+
 The Subscriptions API allows you create and manage recurring payment on your integration
 
 ### **Methods**:
 
 <br>
 
-- `create(self, email_or_customer_code: str, plan_code: str, authorization_code: str = None, start_date: datetime.datetime | datetime.date | str = None)`
+- `create(self, email_or_customer_code: str, plan_code: str, authorization_code: str = None, start_date: Union[datetime.datetime, datetime.date, str] = None)`
 
   Create a subscription on your integration
 
@@ -1904,7 +1955,7 @@ The Subscriptions API allows you create and manage recurring payment on your int
 
       authorization_code (str, optional): If customer has multiple authorizations, you can set the desired authorization you wish to use for this subscription here. If this is not supplied, the customer's most recent authorization would be used. Defaults to None.
 
-      start_date (datetime.datetime | datetime.date | str, optional): Set the date for the first debit. (ISO 8601 format) e.g. 2017-05-16T00:30:13+01:00. Defaults to None.
+      start_date (Union[datetime.datetime, datetime.date, str], optional): Set the date for the first debit. (ISO 8601 format) e.g. 2017-05-16T00:30:13+01:00. Defaults to None.
 
   **Returns**:
 
@@ -1944,13 +1995,13 @@ The Subscriptions API allows you create and manage recurring payment on your int
 
 <br>
 
-- `fetch(self, subscription: int | str)`
+- `fetch(self, subscription: Union[int, str])`
 
   Get details of a subscription on your integration.
 
   **Args**:
 
-      subscription (int | str): The subscription ID or code you want to fetch.
+      subscription (Union[int, str]): The subscription ID or code you want to fetch.
 
   **Returns**:
 
@@ -2013,6 +2064,8 @@ The Subscriptions API allows you create and manage recurring payment on your int
 ## **Transaction Split**
 
 <br>
+
+    py4paystack.routes.transaction_split.TransactionSplit
 
 `TransactionSplit(secret_key: str)`
 
@@ -2078,7 +2131,7 @@ Create, list, retrieve, update split transaction configuration with one or more 
 
 <br>
 
-- `list_search(self, name: str = None, active: bool = None, sort_by: str = None, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None)`
+- `list_search(self, name: str = None, active: bool = None, sort_by: str = None, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None)`
 
   List/search for the transaction splits available on your integration.
 
@@ -2094,9 +2147,9 @@ Create, list, retrieve, update split transaction configuration with one or more 
 
       page (int, optional): Page number to view. If not specify we use a default value of 1.
 
-      from_date (datetime.datetime | datetime.date | str, optional): A timestamp from which to start listing splits e.g. 2019-09-24T00:00:05.000Z, 2019-09-21. Defaults to None.
+      from_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp from which to start listing splits e.g. 2019-09-24T00:00:05.000Z, 2019-09-21. Defaults to None.
 
-      to_date (datetime.datetime | datetime.date | str, optional): A timestamp at which to stop listing splits e.g 2019-09-24T00:00:05.000Z, 2019-09-21. Defaults to None.
+      to_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp at which to stop listing splits e.g 2019-09-24T00:00:05.000Z, 2019-09-21. Defaults to None.
 
   **Returns**:
 
@@ -2148,6 +2201,8 @@ Create, list, retrieve, update split transaction configuration with one or more 
 
 ## **Transaction**
 
+    py4paystack.routes.transaction.Transaction
+
 <br>
 
 `Transaction(secret_key: str)`
@@ -2159,7 +2214,7 @@ The Transactions API allows you create and manage payments on your integration
 
 <br>
 
-- `charge_authorization(self, email: str, amount: int, authorization_code: str, currency: str = None, reference: str = None, channels: list | str = None, queue: bool = False, split_code: str = None, subaccount: str = None, transaction_charge: int = None, bearer: str = None, metadata: dict = None, generate_reference: bool = False)`
+- `charge_authorization(self, email: str, amount: int, authorization_code: str, currency: str = None, reference: str = None, channels: Union[list, str] = None, queue: bool = False, split_code: str = None, subaccount: str = None, transaction_charge: int = None, bearer: str = None, metadata: dict = None, generate_reference: bool = False)`
 
   All authorizations marked as reusable can be charged with this endpoint whenever you need to receive payments.
 
@@ -2175,7 +2230,7 @@ The Transactions API allows you create and manage payments on your integration
 
       reference (str, optional): Unique transaction reference.Only -, ., = and alphanumeric characters allowed.. Defaults to None.
 
-      channels (list | str, optional): Send us 'card' or 'bank' or 'card','bank' as an array ( or just a string if you plan to use one payment option ) to specify what options to show the user paying. Defaults to None.
+      channels (Union[list, str], optional): Send us 'card' or 'bank' or 'card','bank' as an array ( or just a string if you plan to use one payment option ) to specify what options to show the user paying. Defaults to None.
 
       queue (bool, optional): If you are making a scheduled charge call, it is a good idea to queue them so the processing system does not get overloaded causing transaction processing errors. Send queue:true to take advantage of our queued charging. Defaults to False.
 
@@ -2229,7 +2284,7 @@ The Transactions API allows you create and manage payments on your integration
 
 <br>
 
-- `export(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None, customer: int = None, status: str = None, currency: str = None, amount: int = None, settled: bool = None, settlement: int = None, payment_page: int = None)`
+- `export(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None, customer: int = None, status: str = None, currency: str = None, amount: int = None, settled: bool = None, settlement: int = None, payment_page: int = None)`
 
   List transactions carried out on your integration.
 
@@ -2239,9 +2294,9 @@ The Transactions API allows you create and manage payments on your integration
 
       page (int, optional): Specify exactly what page you want to retrieve. If not specify we use a default value of 1.
 
-      from_date (datetime.datetime | datetime.date | str, optional): A timestamp from which to start listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+      from_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp from which to start listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
-      to_date (datetime.datetime | datetime.date | str, optional): A timestamp at which to stop listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+      to_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp at which to stop listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
       customer (int, optional): Specify an ID for the customer whose transactions you want to retrieve. Defaults to None.
 
@@ -2277,7 +2332,7 @@ The Transactions API allows you create and manage payments on your integration
 
 <br>
 
-- `initialize(self, email: str, amount: int, callback_url: str, reference: str = None, currency: str = None, plan: str = None, invoice_limit: int = None, channels: str | list = None, split_code: str = None, transaction_charge: int = None, subaccount: str = None, bearer: str = 'account', metadata: dict = None, generate_reference: bool = False)`
+- `initialize(self, email: str, amount: int, callback_url: str, reference: str = None, currency: str = None, plan: str = None, invoice_limit: int = None, channels: Union[str, list] = None, split_code: str = None, transaction_charge: int = None, subaccount: str = None, bearer: str = 'account', metadata: dict = None, generate_reference: bool = False)`
 
   Initialize a transaction from your backend
 
@@ -2297,7 +2352,7 @@ The Transactions API allows you create and manage payments on your integration
 
       invoice_limit (int, optional): Number of times to charge customer during subscription to plan. Defaults to None.
 
-      channels (str | list, optional): An array of payment channels ( or a string of one channel ) to control what channels you want to make available to the user to make a payment with. Available channels include: ['card', 'bank', 'ussd', 'qr', 'mobile_money', 'bank_transfer']. Defaults to None.
+      channels (Union[str, list], optional): An array of payment channels ( or a string of one channel ) to control what channels you want to make available to the user to make a payment with. Available channels include: ['card', 'bank', 'ussd', 'qr', 'mobile_money', 'bank_transfer']. Defaults to None.
 
       split_code (str, optional): The split code of the transaction split. e.g. SPL_98WF13Eb3w. Defaults to None.
 
@@ -2317,7 +2372,7 @@ The Transactions API allows you create and manage payments on your integration
 
 <br>
 
-- `list_transactions(self, per_page: int = None, page: int = None, customer: int = None, status: str = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None, amount: int = None)`
+- `list_transactions(self, per_page: int = None, page: int = None, customer: int = None, status: str = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None, amount: int = None)`
 
   List transactions carried out on your integration.
 
@@ -2331,9 +2386,9 @@ The Transactions API allows you create and manage payments on your integration
 
       status (str, optional): Filter transactions by status ('failed', 'success', 'abandoned'). Defaults to None.
 
-      from_date (datetime.datetime | datetime.date | str, optional): A timestamp from which to start listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+      from_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp from which to start listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
-      to_date (datetime.datetime | datetime.date | str, optional): A timestamp at which to stop listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+      to_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp at which to stop listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
       amount (int, optional): Filter transactions by amount. Specify the amount (in kobo if currency is NGN, pesewas, if currency is GHS, and cents, if currency is ZAR). Defaults to None.
 
@@ -2369,13 +2424,13 @@ The Transactions API allows you create and manage payments on your integration
 
 <br>
 
-- `timeline(self, id_or_reference: int | str = None)`
+- `timeline(self, id_or_reference: Union[int, str] = None)`
 
   View the timeline of a transaction.
 
   **Args**:
 
-      id_or_reference (int | str, optional): The ID or the reference of the transaction. Defaults to None.
+      id_or_reference (Union[int, str], optional): The ID or the reference of the transaction. Defaults to None.
 
   **Returns**:
 
@@ -2383,7 +2438,7 @@ The Transactions API allows you create and manage payments on your integration
 
 <br>
 
-- `totals(self, per_page: int = None, page: int = None, from_date: datetime.datetime | datetime.date | str = None, to_date: datetime.datetime | datetime.date | str = None)`
+- `totals(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None)`
 
   Total amount received on your account
 
@@ -2393,9 +2448,9 @@ The Transactions API allows you create and manage payments on your integration
 
       page (int, optional): Specify exactly what page you want to retrieve. If not specify we use a default value of 1.
 
-      from_date (datetime.datetime | datetime.date | str, optional): A timestamp from which to start listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+      from_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp from which to start listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
-      to_date (datetime.datetime | datetime.date | str, optional): A timestamp at which to stop listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+      to_date (Union[datetime.datetime, datetime.date, str], optional): A timestamp at which to stop listing transaction e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
   **Returns**:
 
@@ -2422,6 +2477,8 @@ The Transactions API allows you create and manage payments on your integration
 <br>
 
 ## **Transfer Recipient**
+
+    py4paystack.routes.transfer_recipient.TransferRecipient
 
 <br>
 
@@ -2477,13 +2534,13 @@ The Transfer Recipients API allows you create and manage beneficiaries that you 
 
 <br>
 
-- `delete(self, recipient: int | str)`
+- `delete(self, recipient: Union[int, str])`
 
   Deletes a transfer recipient (sets the transfer recipient to inactive).
 
   **Args**:
 
-      recipient (int | str): An ID or code for the recipient who you want to delete.
+      recipient (Union[int, str]): An ID or code for the recipient who you want to delete.
 
   **Returns**:
 
@@ -2491,13 +2548,13 @@ The Transfer Recipients API allows you create and manage beneficiaries that you 
 
 <br>
 
-- `fetch(self, recipient: int | str)`
+- `fetch(self, recipient: Union[int, str])`
 
   Fetch the details of a transfer recipient.
 
   **Args**:
 
-      recipient (int | str): An ID or code for the recipient whose details you want to receive..
+      recipient (Union[int, str]): An ID or code for the recipient whose details you want to receive..
 
   **Returns**:
 
@@ -2505,7 +2562,7 @@ The Transfer Recipients API allows you create and manage beneficiaries that you 
 
 <br>
 
-- `list_recipients(self, per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None)`
+- `list_recipients(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None)`
 
   List transfer recipients available on your integration
 
@@ -2515,9 +2572,9 @@ The Transfer Recipients API allows you create and manage beneficiaries that you 
 
       page (int, optional): Specify exactly what page you want to retrieve. If not specify we use a default value of 1.. Defaults to None.
 
-      from_date (date | datetime | str, optional): A timestamp from which to start listing transfer recipients e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+      from_date (Union[date, datetime, str], optional): A timestamp from which to start listing transfer recipients e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
-      to_date (date | datetime | str, optional): A timestamp at which to stop listing transfer recipients e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+      to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing transfer recipients e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
   **Returns**:
 
@@ -2525,13 +2582,13 @@ The Transfer Recipients API allows you create and manage beneficiaries that you 
 
 <br>
 
-- `update(self, recipient: int | str, name: str = None, email: str = None)`
+- `update(self, recipient: Union[int, str], name: str = None, email: str = None)`
 
   Update an existing recipient. An duplicate account number will lead to the retrieval of the existing record.
 
   **Args**:
 
-      recipient (int | str): Transfer Recipient's ID or code
+      recipient (Union[int, str]): Transfer Recipient's ID or code
 
       name (str, optional): A name for the recipient. Defaults to None.
 
@@ -2548,6 +2605,8 @@ The Transfer Recipients API allows you create and manage beneficiaries that you 
 <br>
 
 ## **Transfer Control**
+
+    py4paystack.routes.transfer_control.TransferControl
 
 <br>
 
@@ -2640,6 +2699,8 @@ The Transfers Control API allows you manage settings of your transfers
 
 ## **Transfer**
 
+    py4paystack.routes.transfer.Transfer
+
 <br>
 
 `Transfer(secret_key: str)`
@@ -2650,13 +2711,13 @@ The Transfers API allows you automate sending money on your integration
 
 <br>
 
-- `fetch(self, transfer: int | str)`
+- `fetch(self, transfer: Union[int, str])`
 
   Get details of a transfer on your integration.
 
   **Args**:
 
-      transfer (int | str): The transfer ID or code you want to fetch
+      transfer (Union[int, str]): The transfer ID or code you want to fetch
 
   **Returns**:
 
@@ -2726,7 +2787,7 @@ The Transfers API allows you automate sending money on your integration
 
 <br>
 
-- `list_transfers(self, per_page: int = None, page: int = None, from_date: datetime.date | datetime.datetime | str = None, to_date: datetime.date | datetime.datetime | str = None, customer_id: int = None)`
+- `list_transfers(self, per_page: int = None, page: int = None, from_date: Union[datetime.datetime, datetime.date, str] = None, to_date: Union[datetime.datetime, datetime.date, str] = None, customer_id: int = None)`
 
   List the transfers made on your integration.
 
@@ -2736,9 +2797,9 @@ The Transfers API allows you automate sending money on your integration
 
       page (int, optional): Specify exactly what transfer you want to page. If not specify we use a default value of 1. Defaults to None.
 
-      from_date (date | datetime | str, optional): A timestamp from which to start listing transfer e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+      from_date (Union[date, datetime, str], optional): A timestamp from which to start listing transfer e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
-      to_date (date | datetime | str, optional): A timestamp at which to stop listing transfer e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+      to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing transfer e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
 
       customer_id (int, optional): Filter by customer ID. Defaults to None.
 
@@ -2767,6 +2828,8 @@ The Transfers API allows you automate sending money on your integration
 <br>
 
 ## **Verification**
+
+    py4paystack.routes.verification.Verification
 
 <br>
 

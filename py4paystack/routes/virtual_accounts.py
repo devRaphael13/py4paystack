@@ -1,3 +1,4 @@
+from typing import Union
 from ..utilities import decorators, settings, util
 from ..utilities.errors import MissingArgumentsError
 from ..utilities.request import Request
@@ -12,12 +13,12 @@ class DedicatedVirtualAccounts(Request):
 
     path = '/dedicated_account'
 
-    def create(self, customer: int | str, preferred_bank: str, subaccount: str = None, split_code: str = None, first_name: str = None, last_name: str = None, phone: str = None):
+    def create(self, customer: Union[int, str], preferred_bank: str, subaccount: str = None, split_code: str = None, first_name: str = None, last_name: str = None, phone: str = None):
         """Create a dedicated virtual account and assign to a customer
             Paystack currently supports Access Bank and Wema Bank.
 
         Args:
-            customer (int | str): Customer ID or code
+            customer (Union[int, str]): Customer ID or code
             preferred_bank (str): The bank slug for preferred bank. To get a list of available banks, use the List Providers endpoint
             subaccount (str, optional): Subaccount code of the account you want to split the transaction with. Defaults to None.
             split_code (str, optional): Split code consisting of the lists of accounts you want to split the transaction with. Defaults to None.
@@ -114,14 +115,14 @@ class DedicatedVirtualAccounts(Request):
         path = f'{self.path}/{dedicated_account_id}'
         return self.delete(path)
 
-    def split_transaction(self, customer: int | str, preferred_bank: str,  subaccount: str | list = None, split_code: str | list = None):
+    def split_transaction(self, customer: Union[int, str], preferred_bank: str,  subaccount: Union[str, list] = None, split_code: Union[str, list] = None):
         """Split a dedicated virtual account transaction with one or more accounts
 
         Args:
-            customer (int | str): Customer ID or code.
+            customer (Union[int, str]): Customer ID or code.
             preferred_bank (str): The bank slug for preferred bank. To get a list of available banks, use the List Providers endpoint
-            subaccount (str | list, optional): Subaccount code of the account you want to split the transaction with. Defaults to None.
-            split_code (str | list, optional): Split code consisting of the lists of accounts you want to split the transaction with. Defaults to None.
+            subaccount (Union[str, list], optional): Subaccount code of the account you want to split the transaction with. Defaults to None.
+            split_code (Union[str, list], optional): Split code consisting of the lists of accounts you want to split the transaction with. Defaults to None.
 
         Raises:
             MissingArgumentsError: Raised when required arguments are missing.

@@ -1,5 +1,6 @@
 from datetime import date, datetime
 
+from typing import Union
 from ..utilities import decorators, settings, util
 from ..utilities.errors import MissingArgumentsError
 from ..utilities.request import Request
@@ -103,14 +104,14 @@ class Transfer(Request):
 
         return self.post(path, payload)
 
-    def list_transfers(self, per_page: int = None, page: int = None, from_date: date | datetime | str = None, to_date: date | datetime | str = None, customer_id: int = None):
+    def list_transfers(self, per_page: int = None, page: int = None, from_date: Union[date, datetime, str] = None, to_date: Union[date, datetime, str] = None, customer_id: int = None):
         """List the transfers made on your integration.
 
         Args:
             per_page (int, optional): Specify how many records you want to retrieve per page. If not specify we use a default value of 50. Defaults to None.
             page (int, optional): Specify exactly what transfer you want to page. If not specify we use a default value of 1. Defaults to None.
-            from_date (date | datetime | str, optional): A timestamp from which to start listing transfer e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
-            to_date (date | datetime | str, optional): A timestamp at which to stop listing transfer e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+            from_date (Union[date, datetime, str], optional): A timestamp from which to start listing transfer e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
+            to_date (Union[date, datetime, str], optional): A timestamp at which to stop listing transfer e.g. 2016-09-24T00:00:05.000Z, 2016-09-21. Defaults to None.
             customer_id (int, optional): Filter by customer ID. Defaults to None.
 
         Returns:
@@ -127,11 +128,11 @@ class Transfer(Request):
             return self.get(util.handle_query_params(self.path, params))
         return self.get(self.path)
 
-    def fetch(self, transfer: int | str):
+    def fetch(self, transfer: Union[int, str]):
         """Get details of a transfer on your integration.
 
         Args:
-            transfer (int | str): The transfer ID or code you want to fetch
+            transfer (Union[int, str]): The transfer ID or code you want to fetch
 
         Returns:
             JSON: Data fetched from API
