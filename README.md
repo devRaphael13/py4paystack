@@ -7,6 +7,7 @@ A paystack API wrapper with type checking written in python
 - [Installation](#installation)
 - [Type Checking](#type-checking)
 - [Requirements](#requirements)
+- [Changelog](#changelog)
 - [Accept payments](#accept-payments)
 - [Advanced Usage](#advanced-usage)
 - [API Routes](#routes)
@@ -25,6 +26,15 @@ Run `pip install py4paystack` on the commandline to install.
 ## Requirements
 
 - python-dotenv
+
+<br>
+
+<br>
+
+## Changelog
+
+**V1.0.2**
+- Bug fixes
 
 <br>
 
