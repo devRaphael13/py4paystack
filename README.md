@@ -48,7 +48,7 @@ The Type checking funtion is on by default, turn of by setting `TYPE_CHECK` to `
 
 ## Accept Payments
 
-To accept payments, you can import the Transaction class from the routes module if that'll be all you need, alternatively you can import the Paystack class like if you need more functionality.
+To accept payments, you can import the Transaction class from the transaction module in the routes module if that'll be all you need, alternatively you can import the Paystack class like if you need more functionality.
 
 ```{python}
 from py4paystack.routes.transactions import Transaction # or from py4paystack.paystack import Paystack
